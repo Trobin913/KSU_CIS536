@@ -3,11 +3,13 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using System.Collections.Generic;
 
 namespace CampFireScene
 {
     class Program
     {
+        static List<OBJobject> loadedAssets;
         [STAThread]
         static void Main(string[] args)
         {
@@ -27,6 +29,7 @@ namespace CampFireScene
         {
             GameWindow game = sender as GameWindow;
             game.VSync = VSyncMode.On;
+            loadedAssets = AssetManger.LoadAssets();
         }
 
         static void game_Resize(object sender, EventArgs e)
@@ -65,7 +68,10 @@ namespace CampFireScene
             GL.Vertex2(1.0f, 1.0f);
 
             GL.End();
-
+            foreach (OBJobject OBJ in loadedAssets)
+            {
+                OBJ.Render();
+            }
             game.SwapBuffers();
         }
     }
