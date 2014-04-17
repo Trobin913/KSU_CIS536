@@ -9,6 +9,9 @@ namespace CampFireScene
 {
     class Program
     {
+        static int programID;
+        static int matrixId;
+        static CameraController cameraController;
         static List<OBJobject> loadedAssets;
         [STAThread]
         static void Main(string[] args)
@@ -20,6 +23,8 @@ namespace CampFireScene
                 game.UpdateFrame += game_UpdateFrame; //Update
                 game.RenderFrame += game_RenderFrame; //Draw
 
+                cameraController = new CameraController(game);
+
                 game.Run(60.0);
             }
         }
@@ -30,6 +35,15 @@ namespace CampFireScene
             GameWindow game = sender as GameWindow;
             game.VSync = VSyncMode.On;
             loadedAssets = AssetManger.LoadAssets();
+            programID = ShaderUtil.LoadProgram(
+                new string[] {
+                    @"Shaders\TransformVertexShader.vertexshader", 
+                    @"Shaders\TextureFragmentShader.fragmentshader"
+                }, new ShaderType[] {
+                    ShaderType.VertexShader,
+                    ShaderType.FragmentShader
+                });
+            matrixId = GL.GetUniformLocation(programID, "MVP");
         }
 
         static void game_Resize(object sender, EventArgs e)
@@ -42,6 +56,7 @@ namespace CampFireScene
         static void game_UpdateFrame(object sender, EventArgs e)
         {
             GameWindow game = sender as GameWindow;
+            cameraController.Update();
             if (game.Keyboard[Key.Escape])
             {
                 game.Exit();
@@ -52,11 +67,11 @@ namespace CampFireScene
         static void game_RenderFrame(object sender, EventArgs e)
         {
             GameWindow game = sender as GameWindow;
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            Matrix4 MVP = cameraController.ProjectionMatrix * cameraController.ViewMatrix * new Matrix4(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
 
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Ortho(-1.0, 1.0, -1.0, 1.0, 0.0, 4.0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.UseProgram(programID);
+            GL.UniformMatrix4(matrixId, true, ref MVP);
 
             GL.Begin(PrimitiveType.Triangles);
 
