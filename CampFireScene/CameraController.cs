@@ -14,24 +14,26 @@ namespace CampFireScene
     {
         private const float ASPECT = 4.0f / 3.0f;
         private const float NEAR_CLIP = 0.1f;
-        private const float FAR_CLIP = 100.0f;
+        private const float FAR_CLIP = 10000.0f;
 
         public Matrix4 ProjectionMatrix { get; private set; }
         public Matrix4 ViewMatrix { get; private set; }
 
-        private Vector3 _position = new Vector3(0, 0, 5);
+        private Vector3 _position = new Vector3(1, 1, 1);
         private float _horizontalAngle = (float)Math.PI;
         private float _verticalAngle = 0.0f;
-        private float _initialFoV = 45.0f;
+        private float _initialFoV = (float)(45.0f * (Math.PI/180.0));
         private float _speed = 3.0f;
         private float _mouseSpeed = 0.005f;
-        private double _lastTime = -1;
+        private double _prevXPos = 0.0f;
+        private double _prevYPos = 0.0f;
         private GameWindow _window;
 
         private bool _isUpPressed = false;
         private bool _isDownPressed = false;
         private bool _isRightPressed = false;
         private bool _isLeftPressed = false;
+        private bool _isMouseOverWindow = true;
 
         public CameraController(GameWindow window)
         {
@@ -40,7 +42,7 @@ namespace CampFireScene
             _window.KeyUp += _window_KeyUp;
         }
 
-        void _window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        private void _window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -63,7 +65,7 @@ namespace CampFireScene
             }
         }
 
-        void _window_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        private void _window_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -86,18 +88,16 @@ namespace CampFireScene
             }
         }
 
-        public void Update()
+        public void Update(double deltaTime)
         {
-            if (_lastTime == -1)
-                _lastTime = _window.RenderTime;
-            double currentTime = _window.RenderTime;
-            float deltaTime = (float)(currentTime - _lastTime);
+            float deltaTimeF = (float)deltaTime;
 
-            double xPos = _window.Mouse.X;
-            double yPos = _window.Mouse.Y;
-
-            _horizontalAngle += _mouseSpeed * (float)(_window.Size.Width / 2 - xPos);
-            _verticalAngle += _mouseSpeed * (float)(_window.Size.Height / 2 - yPos);
+            double xPos = _window.Mouse.X - _prevXPos;
+            double yPos = _window.Mouse.Y - _prevYPos;
+            _horizontalAngle += (float)(_mouseSpeed * xPos);
+            _verticalAngle += (float)(_mouseSpeed * yPos);
+            _prevXPos = _window.Mouse.X;
+            _prevYPos = _window.Mouse.Y;
 
             Vector3 direction = new Vector3(
                 (float)(Math.Cos(_verticalAngle) * Math.Sin(_horizontalAngle)),
@@ -115,31 +115,34 @@ namespace CampFireScene
 
             if (_isUpPressed)
             {
-                _position += direction * deltaTime * _speed;
+                _position += direction * deltaTimeF * _speed;
             }
 
             if (_isDownPressed)
             {
-                _position -= direction * deltaTime * _speed;
+                _position -= direction * deltaTimeF * _speed;
             }
 
             if (_isRightPressed)
             {
-                _position += right * deltaTime * _speed;
+                _position += right * deltaTimeF * _speed;
             }
 
             if (_isLeftPressed)
             {
-                _position -= right * deltaTime * _speed;
+                _position -= right * deltaTimeF * _speed;
             }
 
-            //float FoV = _initialFoV;
-            float FoV = _initialFoV - 5 * _window.Mouse.WheelPrecise;
+            float FoV = _initialFoV;
+            //float FoV = _initialFoV - 5 * _window.Mouse.WheelPrecise;
 
             ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(FoV, ASPECT, NEAR_CLIP, FAR_CLIP);
             ViewMatrix = Matrix4.LookAt(_position, _position + direction, up);
 
-            _lastTime = currentTime;
+#if DEBUG
+            Console.Out.Write(new string(' ', Console.BufferWidth) + "\r");
+            Console.Out.Write(string.Format("{0}, {1}, {2}\r", _verticalAngle, _horizontalAngle, _position));
+#endif
         }
     }
 }

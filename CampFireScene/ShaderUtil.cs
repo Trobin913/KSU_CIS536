@@ -11,12 +11,36 @@ namespace CampFireScene
 {
     class ShaderUtil
     {
-        public static int LoadProgram(string[] shaders, ShaderType[] types)
+        private static ShaderType getShaderTypeFromExtension(string shaderFilePath)
+        {
+            string ext = Path.GetExtension(shaderFilePath).ToLower();
+            switch (ext)
+            {
+                case ".vertexshader":
+                    return ShaderType.VertexShader;
+                case ".fragmentshader":
+                    return ShaderType.FragmentShader;
+                case ".computeshader":
+                    return ShaderType.ComputeShader;
+                case ".geometryshader":
+                    return ShaderType.GeometryShader;
+                case ".geometryshaderext":
+                    return ShaderType.GeometryShaderExt;
+                case ".tesscontrolshader":
+                    return ShaderType.TessControlShader;
+                case ".tessevaluationshader":
+                    return ShaderType.TessEvaluationShader;
+                default:
+                    throw new Exception("Unknown shader extention: " + ext);
+            }
+        }
+
+        public static int LoadProgram(params string[] shaders)
         {
             int[] shaderIds = new int[shaders.Length];
             for (int i = 0; i < shaders.Length; i++)
             {
-                shaderIds[i] = LoadShader(shaders[i], types[i]);
+                shaderIds[i] = LoadShader(shaders[i]);
             }
 
             Console.Out.WriteLine("Linking program...");
@@ -34,9 +58,9 @@ namespace CampFireScene
             return programId;
         }
 
-        public static int LoadShader(string shaderFilePath, ShaderType type)
+        public static int LoadShader(string shaderFilePath)
         {
-            int shaderId = GL.CreateShader(type);
+            int shaderId = GL.CreateShader(getShaderTypeFromExtension(shaderFilePath));
 
             string shaderCode = string.Empty;
             try
