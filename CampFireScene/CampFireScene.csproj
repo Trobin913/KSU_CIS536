@@ -47,6 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +57,12 @@
   <ItemGroup>
     <Compile Include="AssetManger.cs" />
     <Compile Include="CameraController.cs" />
+    <Compile Include="Controls\CameraControlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\CameraControlForm.Designer.cs">
+      <DependentUpon>CameraControlForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InputManager.cs" />
     <Compile Include="OBJobject.cs" />
     <Compile Include="Program.cs" />
@@ -81,7 +88,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\CameraControlForm.resx">
+      <DependentUpon>CameraControlForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -18,47 +18,53 @@ namespace CampFireScene
 
         public Matrix4 ProjectionMatrix { get; private set; }
         public Matrix4 ViewMatrix { get; private set; }
+        public Matrix4 ModelMatrix = Matrix4.Identity;
 
         private Vector3 _position = new Vector3(1, 1, 1);
         private float _horizontalAngle = (float)Math.PI;
         private float _verticalAngle = 0.0f;
         private float _initialFoV = (float)(45.0f * (Math.PI/180.0));
-        private float _speed = 3.0f;
-        private float _mouseSpeed = 0.005f;
-        private double _prevXPos = 0.0f;
-        private double _prevYPos = 0.0f;
+        private float _speed = 2.0f;
+        private float _mouseSpeed = 0.01f;
+        private double _xDelta = 0.0f;
+        private double _yDelta = 0.0f;
         private GameWindow _window;
 
         private bool _isUpPressed = false;
         private bool _isDownPressed = false;
         private bool _isRightPressed = false;
         private bool _isLeftPressed = false;
-        private bool _isMouseOverWindow = true;
 
         public CameraController(GameWindow window)
         {
             _window = window;
             _window.KeyDown += _window_KeyDown;
             _window.KeyUp += _window_KeyUp;
+            ProjectionMatrix = Matrix4.Identity;
+            ViewMatrix = Matrix4.Identity;
         }
 
         private void _window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
             switch (e.Key)
             {
-                case OpenTK.Input.Key.A:
                 case OpenTK.Input.Key.Left:
                     _isLeftPressed = false;
                     break;
+                case OpenTK.Input.Key.A:
                 case OpenTK.Input.Key.D:
+                    _xDelta = 0;
+                    break;
                 case OpenTK.Input.Key.Right:
                     _isRightPressed = false;
                     break;
-                case OpenTK.Input.Key.W:
                 case OpenTK.Input.Key.Up:
                     _isUpPressed = false;
                     break;
+                case OpenTK.Input.Key.W:
                 case OpenTK.Input.Key.S:
+                    _yDelta = 0;
+                    break;
                 case OpenTK.Input.Key.Down:
                     _isDownPressed = false;
                     break;
@@ -70,18 +76,26 @@ namespace CampFireScene
             switch (e.Key)
             {
                 case OpenTK.Input.Key.A:
+                    _xDelta = -1;
+                    break;
                 case OpenTK.Input.Key.Left:
                     _isLeftPressed = true;
                     break;
                 case OpenTK.Input.Key.D:
+                    _xDelta = 1;
+                    break;
                 case OpenTK.Input.Key.Right:
                     _isRightPressed = true;
                     break;
                 case OpenTK.Input.Key.W:
+                    _yDelta = 1;
+                    break;
                 case OpenTK.Input.Key.Up:
                     _isUpPressed = true;
                     break;
                 case OpenTK.Input.Key.S:
+                    _yDelta = -1;
+                    break;
                 case OpenTK.Input.Key.Down:
                     _isDownPressed = true;
                     break;
@@ -92,12 +106,8 @@ namespace CampFireScene
         {
             float deltaTimeF = (float)deltaTime;
 
-            double xPos = _window.Mouse.X - _prevXPos;
-            double yPos = _window.Mouse.Y - _prevYPos;
-            _horizontalAngle += (float)(_mouseSpeed * xPos);
-            _verticalAngle += (float)(_mouseSpeed * yPos);
-            _prevXPos = _window.Mouse.X;
-            _prevYPos = _window.Mouse.Y;
+            _horizontalAngle += (float)(_mouseSpeed * _xDelta);
+            _verticalAngle += (float)(_mouseSpeed * _yDelta);
 
             Vector3 direction = new Vector3(
                 (float)(Math.Cos(_verticalAngle) * Math.Sin(_horizontalAngle)),
@@ -140,7 +150,6 @@ namespace CampFireScene
             ViewMatrix = Matrix4.LookAt(_position, _position + direction, up);
 
 #if DEBUG
-            Console.Out.Write(new string(' ', Console.BufferWidth) + "\r");
             Console.Out.Write(string.Format("{0}, {1}, {2}\r", _verticalAngle, _horizontalAngle, _position));
 #endif
         }

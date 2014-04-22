@@ -12,6 +12,45 @@ namespace CampFireScene
 {
     public class AssetManger
     {
+        public static float[] CubeVertexBufferData = { 
+		    -1.0f,-1.0f,-1.0f,
+		    -1.0f,-1.0f, 1.0f,
+		    -1.0f, 1.0f, 1.0f,
+		     1.0f, 1.0f,-1.0f,
+		    -1.0f,-1.0f,-1.0f,
+		    -1.0f, 1.0f,-1.0f,
+		     1.0f,-1.0f, 1.0f,
+		    -1.0f,-1.0f,-1.0f,
+		     1.0f,-1.0f,-1.0f,
+		     1.0f, 1.0f,-1.0f,
+		     1.0f,-1.0f,-1.0f,
+		    -1.0f,-1.0f,-1.0f,
+		    -1.0f,-1.0f,-1.0f,
+		    -1.0f, 1.0f, 1.0f,
+		    -1.0f, 1.0f,-1.0f,
+		     1.0f,-1.0f, 1.0f,
+		    -1.0f,-1.0f, 1.0f,
+		    -1.0f,-1.0f,-1.0f,
+		    -1.0f, 1.0f, 1.0f,
+		    -1.0f,-1.0f, 1.0f,
+		     1.0f,-1.0f, 1.0f,
+		     1.0f, 1.0f, 1.0f,
+		     1.0f,-1.0f,-1.0f,
+		     1.0f, 1.0f,-1.0f,
+		     1.0f,-1.0f,-1.0f,
+		     1.0f, 1.0f, 1.0f,
+		     1.0f,-1.0f, 1.0f,
+		     1.0f, 1.0f, 1.0f,
+		     1.0f, 1.0f,-1.0f,
+		    -1.0f, 1.0f,-1.0f,
+		     1.0f, 1.0f, 1.0f,
+		    -1.0f, 1.0f,-1.0f,
+		    -1.0f, 1.0f, 1.0f,
+		     1.0f, 1.0f, 1.0f,
+		    -1.0f, 1.0f, 1.0f,
+		     1.0f,-1.0f, 1.0f
+        };
+
         private string _assetDirectory;
 
         public AssetManger(string assetDirectory)
