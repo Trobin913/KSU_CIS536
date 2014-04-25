@@ -153,5 +153,14 @@ namespace CampFireScene
             Console.Out.Write(string.Format("{0}, {1}, {2}\r", _verticalAngle, _horizontalAngle, _position));
 #endif
         }
+
+        public void Reset()
+        {
+            ProjectionMatrix = Matrix4.Identity;
+            ViewMatrix = Matrix4.Identity;
+            _position = new Vector3(1, 1, 1);
+            _horizontalAngle = (float)Math.PI;
+            _verticalAngle = 0.0f;
+        }
     }
 }

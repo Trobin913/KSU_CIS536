@@ -15,7 +15,7 @@ namespace CampFireScene
         public static float[] CubeVertexBufferData = { 
 		    -1.0f,-1.0f,-1.0f,
 		    -1.0f,-1.0f, 1.0f,
-		    -1.0f, 1.0f, 1.0f,
+		    -1.0f, 1.0f, 1.0f, 
 		     1.0f, 1.0f,-1.0f,
 		    -1.0f,-1.0f,-1.0f,
 		    -1.0f, 1.0f,-1.0f,
