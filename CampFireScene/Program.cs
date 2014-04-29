@@ -84,15 +84,7 @@ namespace CampFireScene
             GL.UniformMatrix4(matrixId, false, ref MVP); 
             foreach (OBJobject obj in loadedAssets)
             {
-                //GL.MatrixMode(MatrixMode.Projection);
-                //GL.LoadMatrix(ref cameraController.ProjectionMatrix);
-                GL.MatrixMode(MatrixMode.Modelview);
-                GL.LoadMatrix(ref cameraController.ViewMatrix);
-
-                GL.VertexPointer(3, VertexPointerType.Float, 0, obj.);
-                GL.ColorPointer(4, ColorPointerType.Float, 0, cubeColors);
-                GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedByte, triangles);
-       
+                obj.Render();
             }
 
             SwapBuffers();

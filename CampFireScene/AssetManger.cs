@@ -63,7 +63,7 @@ namespace CampFireScene
             //Load in all assets from the disk here.
             List<string> filesToBeParced = new List<string>();
             List<OBJobject> parcedFiles;
-            filesToBeParced.Add(@"Objects\untitled.obj");
+            filesToBeParced.Add(@"Objects\cube.obj");
             parcedFiles = ParceFiles(filesToBeParced);
             parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
             return parcedFiles;
@@ -147,150 +147,9 @@ namespace CampFireScene
 
                     }
                 }
+                listOfOBJS.Add(OBJ);
 
-                int faceCount = OBJ.faces.Count;
-                float[] vertexBufferArray = null;
-                float[] normalBufferArray = null;
-                float[] vertexTextureBufferArray = null;
-                if(OBJ.vertexAndTextureCoordinates)
-                {
-                    vertexBufferArray = new float[(faceCount)*9];
-                    vertexTextureBufferArray = new float[faceCount*6];
-                    for (int j = 0; j < faceCount; j++)
-                    {
-                        int currentVert = OBJ.faces[j].VertexIndex1;
-                        vertexBufferArray[j * 9] = OBJ.Vertices[currentVert*3-3];
-                        vertexBufferArray[j * 9 + 1] = OBJ.Vertices[currentVert*3-2];
-                        vertexBufferArray[j * 9 + 2] = OBJ.Vertices[currentVert*3-1];
-                        currentVert = OBJ.faces[j].VertexIndex2;
-                        vertexBufferArray[j * 9 + 3] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 4] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 5] = OBJ.Vertices[currentVert * 3 - 1];
-                        currentVert = OBJ.faces[j].VertexIndex3;
-                        vertexBufferArray[j * 9 + 6] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 7] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 8] = OBJ.Vertices[currentVert * 3 - 1];
-                        int currentTexture = OBJ.faces[j].textureIndex1;
-                        vertexTextureBufferArray[j * 9] = OBJ.uvs[currentTexture*2-2];
-                        vertexTextureBufferArray[j * 9 + 1] = OBJ.uvs[currentTexture*2-1];
-                        currentTexture = OBJ.faces[j].textureIndex2;
-                        vertexTextureBufferArray[j * 9 + 2] = OBJ.uvs[currentTexture * 2 - 2];
-                        vertexTextureBufferArray[j * 9 + 3] = OBJ.uvs[currentTexture * 2 - 1];
-                        currentTexture = OBJ.faces[j].textureIndex3;
-                        vertexTextureBufferArray[j * 9 + 4] = OBJ.uvs[currentTexture * 2 - 2];
-                        vertexTextureBufferArray[j * 9 + 5] = OBJ.uvs[currentTexture * 2 - 1];
-                    }
-
-                }
-                else if(OBJ.vertexTextureCoordinatesAndNormals)
-                {
-                    vertexBufferArray = new float[faceCount*9];
-                    vertexTextureBufferArray = new float[(faceCount)*6];
-                    normalBufferArray = new float[faceCount*9];
-                    for (int j = 0; j < faceCount; j++)
-                    {
-                        int currentVert = OBJ.faces[j].VertexIndex1;
-                        vertexBufferArray[j * 9] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 1] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 2] = OBJ.Vertices[currentVert * 3 - 1];
-                        currentVert = OBJ.faces[j].VertexIndex2;
-                        vertexBufferArray[j * 9 + 3] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 4] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 5] = OBJ.Vertices[currentVert * 3 - 1];
-                        currentVert = OBJ.faces[j].VertexIndex3;
-                        vertexBufferArray[j * 9 + 6] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 7] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 8] = OBJ.Vertices[currentVert * 3 - 1];
-                        int currentTexture = OBJ.faces[j].textureIndex1;
-                        vertexTextureBufferArray[j * 6] = OBJ.uvs[currentTexture * 2 - 2];
-                        vertexTextureBufferArray[j * 6 + 1] = OBJ.uvs[currentTexture * 2 - 1];
-                        currentTexture = OBJ.faces[j].textureIndex2;
-                        vertexTextureBufferArray[j * 6 + 2] = OBJ.uvs[currentTexture * 2 - 2];
-                        vertexTextureBufferArray[j * 6 + 3] = OBJ.uvs[currentTexture * 2 - 1];
-                        currentTexture = OBJ.faces[j].textureIndex3;
-                        vertexTextureBufferArray[j * 6 + 4] = OBJ.uvs[currentTexture * 2 - 2];
-                        vertexTextureBufferArray[j * 6 + 5] = OBJ.uvs[currentTexture * 2 - 1];
-                        int currentNormal = OBJ.faces[j].normalIndex1;
-                        normalBufferArray[j * 9] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 1] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 2] = OBJ.normals[currentNormal * 3 - 3];
-                        currentNormal = OBJ.faces[j].normalIndex2;
-                        normalBufferArray[j * 9 + 3] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 4] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 5] = OBJ.normals[currentNormal * 3 - 3];
-                        currentNormal = OBJ.faces[j].normalIndex3;
-                        normalBufferArray[j * 9 + 6] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 7] = OBJ.normals[currentNormal * 3 - 3];
-                        normalBufferArray[j * 9 + 8] = OBJ.normals[currentNormal * 3 - 3];
-
-                    }
-                }
-                else
-                {
-                    vertexBufferArray = new float[faceCount*9];
-                    for (int j = 0; j < faceCount; j++)
-                    {
-                        int currentVert = OBJ.faces[j].VertexIndex1;
-                        vertexBufferArray[j * 9] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 1] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 2] = OBJ.Vertices[currentVert * 3 - 1];
-                        currentVert = OBJ.faces[j].VertexIndex2;
-                        vertexBufferArray[j * 9 + 3] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 4] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 5] = OBJ.Vertices[currentVert * 3 - 1];
-                        currentVert = OBJ.faces[j].VertexIndex3;
-                        vertexBufferArray[j * 9 + 6] = OBJ.Vertices[currentVert * 3 - 3];
-                        vertexBufferArray[j * 9 + 7] = OBJ.Vertices[currentVert * 3 - 2];
-                        vertexBufferArray[j * 9 + 8] = OBJ.Vertices[currentVert * 3 - 1];
-                    }
-                }
-                #if DEBUG
-                if (File.Exists(@"DEBUG"))
-                    File.Delete(@"DEBUG");
-                StreamWriter w = new StreamWriter(File.Open(@"DEBUG", FileMode.OpenOrCreate));
-
-                for (int a = 0; a < vertexBufferArray.Length; a += 3)
-                    w.WriteLine("v {0} {1} {2}", vertexBufferArray[a], vertexBufferArray[a + 1], vertexBufferArray[a + 2]);
-
-                for (int a = 0; a < vertexTextureBufferArray.Length; a += 2)
-                    w.WriteLine("vt {0} {1}", vertexTextureBufferArray[a], vertexTextureBufferArray[a + 1]);
-
-                for (int a = 0; a < normalBufferArray.Length; a += 3)
-                    w.WriteLine("vn {0} {1} {2}", normalBufferArray[a], normalBufferArray[a + 1], normalBufferArray[a + 2]);
-
-                w.Flush();
-                w.Close();
-                #endif
-                if(OBJ.vertexAndTextureCoordinates)
-                {
-                    OBJ.triangleCount = faceCount;
-                    OBJ.vertexBufferHandle = GL.GenBuffer();
-                    OBJ.vertexTexturBufferHandle = GL.GenBuffer();
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Length * sizeof(float)), vertexBufferArray, BufferUsageHint.StaticDraw);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexTexturBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexTextureBufferArray.Length * sizeof(float)), vertexTextureBufferArray, BufferUsageHint.StaticDraw);
-                }
-                else if(OBJ.vertexTextureCoordinatesAndNormals)
-                {
-                    OBJ.triangleCount = faceCount;
-                    OBJ.vertexBufferHandle = GL.GenBuffer();
-                    OBJ.vertexTexturBufferHandle = GL.GenBuffer();
-                    OBJ.vertexNormalBufferHandle = GL.GenBuffer();
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Length * sizeof(float)), vertexBufferArray, BufferUsageHint.StaticDraw);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexTexturBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexTextureBufferArray.Length * sizeof(float)), vertexTextureBufferArray, BufferUsageHint.StaticDraw);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexNormalBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(normalBufferArray.Length * sizeof(float)), normalBufferArray, BufferUsageHint.StaticDraw);
-                }
-                else
-                {
-                    OBJ.triangleCount = faceCount;
-                    OBJ.vertexBufferHandle = GL.GenBuffer();
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, OBJ.vertexBufferHandle);
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Length * sizeof(float)), vertexBufferArray, BufferUsageHint.StaticDraw);
-                }
+                
                 listOfOBJS.Add(OBJ);
             }
 
