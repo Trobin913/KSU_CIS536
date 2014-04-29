@@ -74,11 +74,9 @@ namespace CampFireScene
             StreamReader sr;
             string line;
             OBJobject OBJ;
-            int plyCount;
             List<OBJobject> listOfOBJS = new List<OBJobject>();
             for (int i = 0; i < files.Count; i++)
             {
-                //plyCount = 0;
                 sr = new StreamReader(files[i]);
                 OBJ = new OBJobject();
                 while (!sr.EndOfStream)
@@ -246,7 +244,7 @@ namespace CampFireScene
                         vertexBufferArray[j * 9 + 8] = OBJ.Vertices[currentVert * 3 - 1];
                     }
                 }
-#if DEBUG
+                #if DEBUG
                 if (File.Exists(@"DEBUG"))
                     File.Delete(@"DEBUG");
                 StreamWriter w = new StreamWriter(File.Open(@"DEBUG", FileMode.OpenOrCreate));
@@ -262,7 +260,7 @@ namespace CampFireScene
 
                 w.Flush();
                 w.Close();
-#endif
+                #endif
                 if(OBJ.vertexAndTextureCoordinates)
                 {
                     OBJ.triangleCount = faceCount;
