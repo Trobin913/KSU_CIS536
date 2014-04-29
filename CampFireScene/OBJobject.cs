@@ -117,6 +117,5 @@ namespace CampFireScene
             //GL.DisableVertexAttribArray(vertexTexturBufferHandle);
             //GL.DisableVertexAttribArray(vertexNormalBufferHandle);
         }
-
     }
 }
