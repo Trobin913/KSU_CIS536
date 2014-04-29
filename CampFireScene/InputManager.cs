@@ -39,29 +39,29 @@ namespace CampFireScene
     /// <summary>InputManager is used for input management (keyboard and mouse).</summary>
     public static class InputManager
     {
-        // Reference to the keyboard input
-        private static Keyboard _keyboard;
-        //private static Mouse _mouse;
+        //// Reference to the keyboard input
+        //private static Keyboard _keyboard;
+        ////private static Mouse _mouse;
 
-        /// <summary>Gets a reference to the keyboard device to check inputs.</summary>
-        public static Keyboard Keyboard { get { return _keyboard; } }
-        /// <summary>Gets a reference to the mouse device to check inputs.</summary>
-        //public static Mouse Mouse { get { return _mouse; } }
+        ///// <summary>Gets a reference to the keyboard device to check inputs.</summary>
+        //public static Keyboard Keyboard { get { return _keyboard; } }
+        ///// <summary>Gets a reference to the mouse device to check inputs.</summary>
+        ////public static Mouse Mouse { get { return _mouse; } }
 
-        /// <summary>This initializes the reference to OpenTK's keyboard.</summary>
-        /// <param name="keyboardDevice">Reference to OpenTK's KeyboardDevice class within their GameWindow class.</param>
-        internal static void InitializeKeyboard(KeyboardDevice keyboardDevice)
-        { _keyboard = new Keyboard(keyboardDevice); }
-        /// <summary>This initializes the reference to OpenTK's mouse.</summary>
-        /// <param name="mouseDevice">Reference to OpenTK's MouseDevice class within their GameWindow class.</param>
-        //internal static void InitializeMouse(MouseDevice mouseDevice)
-        //{ _mouse = new Mouse(mouseDevice); }
+        ///// <summary>This initializes the reference to OpenTK's keyboard.</summary>
+        ///// <param name="keyboardDevice">Reference to OpenTK's KeyboardDevice class within their GameWindow class.</param>
+        //internal static void InitializeKeyboard(KeyboardDevice keyboardDevice)
+        //{ _keyboard = new Keyboard(keyboardDevice); }
+        ///// <summary>This initializes the reference to OpenTK's mouse.</summary>
+        ///// <param name="mouseDevice">Reference to OpenTK's MouseDevice class within their GameWindow class.</param>
+        ////internal static void InitializeMouse(MouseDevice mouseDevice)
+        ////{ _mouse = new Mouse(mouseDevice); }
 
-        /// <summary>Update the input states.</summary>
-        public static void Update()
-        {
-            _keyboard.Update();
-            //_mouse.Update();
-        }
+        ///// <summary>Update the input states.</summary>
+        //public static void Update()
+        //{
+        //    _keyboard.Update();
+        //    //_mouse.Update();
+        //}
     }
 }
