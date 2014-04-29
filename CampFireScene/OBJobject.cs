@@ -19,7 +19,7 @@ namespace CampFireScene
         public List<float> Vertices;
         public List<float> uvs;
         public List<float> normals;
-        public List<int> faces;
+        public List<faces> faces;
         public int[] indicies;
         public bool vertexAndTextureCoordinates;
         public bool vertexTextureCoordinatesAndNormals;
@@ -39,7 +39,7 @@ namespace CampFireScene
             Vertices = new List<float>();
             uvs = new List<float>();
             normals = new List<float>();
-            faces = new List<int>();
+            faces = new List<faces>();
             imageTextureHandle = -1;
             vertexAndTextureCoordinates = false;
             vertexTextureCoordinatesAndNormals = false;
@@ -47,23 +47,30 @@ namespace CampFireScene
         }
         public void Render()
         {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexNormalBufferHandle);
+            GL.EnableVertexAttribArray(vertexBufferHandle);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
             GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
             if (vertexAndTextureCoordinates)
             {
+                GL.EnableVertexAttribArray(vertexTexturBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexTexturBufferHandle);
                 GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, 0);
             }
             else if (vertexTextureCoordinatesAndNormals)
             {
+                GL.EnableVertexAttribArray(vertexTexturBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexTexturBufferHandle);
                 GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, 0);
+                GL.EnableVertexAttribArray(vertexNormalBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexNormalBufferHandle);
                 GL.NormalPointer(NormalPointerType.Float, 0, 0);
             }
             if (imageTextureHandle != -1)
                 GL.BindTexture(TextureTarget.Texture2D, imageTextureHandle);
             GL.DrawArrays(PrimitiveType.Triangles, 0, triangleCount * 3);
+            GL.DisableVertexAttribArray(vertexBufferHandle);
+            GL.DisableVertexAttribArray(vertexTexturBufferHandle);
+            GL.DisableVertexAttribArray(vertexNormalBufferHandle);
         }
     }
 }

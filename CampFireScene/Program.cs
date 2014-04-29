@@ -7,24 +7,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CampFireScene
 {
     class Program : GameWindow
     {
         public static void Main(string[] args)
         {
-            using (Program p = new Program())
-                p.Run(60.0);
+           using (Program p = new Program()) p.Run(60.0);
         }
-
+        private const float ASPECT = 4.0f / 3.0f;
+        private const float NEAR_CLIP = 0.1f;
+        private const float FAR_CLIP = 10000.0f;
+        private const float FoV = 0.5f;
         int programID;
+        int programIDOBJ;
         int matrixId;
-        CameraController cameraController;
+        Camera cameraController;
         List<OBJobject> loadedAssets;
 
         public Program()
         {
-            cameraController = new CameraController(this);
+            InputManager.InitializeKeyboard(this.Keyboard);
+            cameraController = new Camera();
+            cameraController.PositionSpeed = 1;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -36,7 +42,12 @@ namespace CampFireScene
                     @"Shaders\TransformVertexShader.vertexshader",
                     @"Shaders\TextureFragmentShader.fragmentshader"
                     );
+            programIDOBJ = ShaderUtil.LoadProgram(
+                    @"Shaders\OBJObjectFragmentShader.fragmentshader",
+                    @"Shaders\OBJObjectVertexShader.vertexshader"
+                    );
             matrixId = GL.GetUniformLocation(programID, "MVP");
+
         }
 
         protected override void OnResize(EventArgs e)
@@ -48,37 +59,59 @@ namespace CampFireScene
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            cameraController.Update(e.Time);
+            //cameraController.Update(e.Time);
+            InputManager.Update();
+            cameraController.CameraControls();
             if (Keyboard[Key.Escape])
             {
                 Exit();
             }
         }
-
+        double temp = 0;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
+            //double t = e.Time;
             
             GL.UseProgram(programID);
             GL.Disable(EnableCap.CullFace);
-            Matrix4 MVP = cameraController.ProjectionMatrix * cameraController.ViewMatrix * cameraController.ModelMatrix;
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            Matrix4 ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(FoV, ASPECT, NEAR_CLIP, FAR_CLIP);
+            Matrix4 viewMatrix = cameraController.GetMatrix();
+            Matrix4 MVP = ProjectionMatrix * viewMatrix;
+
             GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
+            GL.LoadMatrix(ref ProjectionMatrix);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadMatrix(ref viewMatrix);
+
+            //Matrix4 MVP = cameraController.ProjectionMatrix * cameraController.ViewMatrix * cameraController.ModelMatrix;
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
             GL.UniformMatrix4(matrixId, true, ref MVP);
 
-            GL.Begin(PrimitiveType.Triangles);
+            //GL.Begin(PrimitiveType.Triangles);
 
-            for (int i = 0; i < 36; i += 3)
+            //for (int i = 0; i < 36; i += 3)
+            //{
+            //    GL.Vertex3(
+            //        AssetManger.CubeVertexBufferData[i],
+            //        AssetManger.CubeVertexBufferData[i + 1],
+            //        AssetManger.CubeVertexBufferData[i + 2]
+            //        );
+            //}
+
+            //GL.End();
+            //GL.Begin(PrimitiveType.Triangles);
+            //temp += .01f;
+            //GL.Vertex3(0, 1, 0);
+            //GL.Vertex3(1, -1, 0);
+            //GL.Vertex3(1, 0, 0);
+            //GL.End();
+            //GL.UseProgram(programIDOBJ);
+            foreach (OBJobject obj in loadedAssets)
             {
-                GL.Vertex3(
-                    AssetManger.CubeVertexBufferData[i],
-                    AssetManger.CubeVertexBufferData[i + 1],
-                    AssetManger.CubeVertexBufferData[i + 2]
-                    );
+                obj.Render();
             }
-
-            GL.End();
 
             SwapBuffers();
         }
