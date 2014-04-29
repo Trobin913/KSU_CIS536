@@ -108,6 +108,7 @@ namespace CampFireScene
                         vertexBufferArray[j] = OBJ.Vertices[currentVert*3-3];
                         vertexBufferArray[j + 1] = OBJ.Vertices[currentVert*3-2];
                         vertexBufferArray[j + 2] = OBJ.Vertices[currentVert*3-1];
+                        
                         int currentTexture = OBJ.faces[j+1];
                         vertexTextureBufferArray[j] = OBJ.uvs[currentTexture*2-2];
                         vertexTextureBufferArray[j+1] = OBJ.uvs[currentTexture*2-1];
@@ -125,10 +126,12 @@ namespace CampFireScene
                         vertexBufferArray[j] = OBJ.Vertices[currentVert*3-3];
                         vertexBufferArray[j + 1] = OBJ.Vertices[currentVert*3-2];
                         vertexBufferArray[j + 2] = OBJ.Vertices[currentVert*3-1];
+                        
                         int currentTexture = OBJ.faces[j + 1];
                         int offset = j / 3;
                         vertexTextureBufferArray[j-offset] = OBJ.uvs[currentTexture * 2 - 2];
                         vertexTextureBufferArray[j-offset + 1] = OBJ.uvs[currentTexture * 2 - 1];
+                        
                         int currentNormal = OBJ.faces[j + 2];
                         normalBufferArray[j] = OBJ.normals[currentNormal * 3 - 3];
                         normalBufferArray[j + 1] = OBJ.normals[currentNormal * 3 - 2];
@@ -146,6 +149,25 @@ namespace CampFireScene
                         vertexBufferArray[j + 2] = OBJ.Vertices[currentVert*3-1];
                     }
                 }
+
+#if DEBUG
+                if(File.Exists(@"DEBUG"))
+                    File.Delete(@"DEBUG");
+                StreamWriter w = new StreamWriter(File.Open(@"DEBUG", FileMode.OpenOrCreate));
+
+                for(int a = 0; a < vertexBufferArray.Length; a += 3)
+                    w.WriteLine("v {0} {1} {2}", vertexBufferArray[a], vertexBufferArray[a+1], vertexBufferArray[a+2]);
+
+                for(int a = 0; a < vertexTextureBufferArray.Length; a += 2)
+                    w.WriteLine("vt {0} {1}", vertexTextureBufferArray[a], vertexTextureBufferArray[a+1]);
+
+                for(int a = 0; a < normalBufferArray.Length; a += 3)
+                    w.WriteLine("vn {0} {1} {2}", normalBufferArray[a], normalBufferArray[a+1], normalBufferArray[a+2]);
+
+                w.Flush();
+                w.Close();
+#endif
+
                 if(OBJ.vertexAndTextureCoordinates)
                 {
                     OBJ.triangleCount = faceCount / 6;
