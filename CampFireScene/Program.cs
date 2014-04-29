@@ -18,8 +18,87 @@ namespace CampFireScene
                 p.Run(60.0);
         }
 
-        Matrix4 matrixProjection, matrixModelview;
-        float cameraRotation = 0f;
+        CameraController2 cameraController;
+        List<OBJobject> loadedAssets;
+        int programId;
+        int matrixId;
+
+        public Program()
+        {
+            cameraController = new CameraController2(this);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            GL.ClearColor(Color.CornflowerBlue);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.ColorArray);
+            /*
+            //Load shaders
+            programId = ShaderUtil.LoadProgram(
+                @"Shaders\TextureFragmentShader.fragmentshader",
+                @"Shaders\TransformVertexShader.vertexshader"
+                );
+            matrixId = GL.GetUniformLocation(programId, "MVP");
+
+            //Load assets
+            loadedAssets = AssetManger.LoadAssets();
+            Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
+             */
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            GL.Viewport(0, 0, Width, Height);
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
+
+            cameraController.Update(e.Time);
+            if (Focused)
+            {
+                ResetCursor();
+            }
+
+            if (Keyboard[Key.Escape])
+            {
+                Exit();
+            }
+        }
+
+        protected override void OnRenderFrame(FrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            renderTestCube();
+            /*
+            GL.UseProgram(programId);
+            Matrix4 MVP = cameraController.ProjectionMatrix * cameraController.ModelViewMatrix;
+            GL.UniformMatrix4(matrixId, false, ref MVP); 
+            foreach (OBJobject obj in loadedAssets)
+            {
+                obj.Render2();
+            }
+             */
+
+            SwapBuffers();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+        }
+
+#if DEBUG
 
         float[] cubeColors = {
 			1.0f, 0.0f, 0.0f, 1.0f,
@@ -59,62 +138,24 @@ namespace CampFireScene
 			-0.5f, -0.5f, -0.5f, // vertex[7]
 		};
 
-        public Program()
+        private void renderTestCube()
         {
-            //cameraController = new CameraController(this);
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-
-            GL.ClearColor(Color.CornflowerBlue);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.ColorArray);
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            GL.Viewport(0, 0, Width, Height);
-            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref matrixProjection);
-        }
-
-        protected override void OnUpdateFrame(FrameEventArgs e)
-        {
-            base.OnUpdateFrame(e);
-            if (Keyboard[Key.Escape])
-            {
-                Exit();
-            }
-        }
-
-        protected override void OnRenderFrame(FrameEventArgs e)
-        {
-            base.OnRenderFrame(e);
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            cameraRotation = (cameraRotation < 360f) ? (cameraRotation + 1f * (float)e.Time) : 0f;
-            Matrix4.CreateRotationY(cameraRotation, out matrixModelview);
-            matrixModelview *= Matrix4.LookAt(0f, 0f, -5f, 0f, 0f, 0f, 0f, 1f, 0f);
+            //GL.MatrixMode(MatrixMode.Projection);
+            //GL.LoadMatrix(ref cameraController.ProjectionMatrix);
             GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref matrixModelview);
+            GL.LoadMatrix(ref cameraController.ViewMatrix);
 
             GL.VertexPointer(3, VertexPointerType.Float, 0, cube);
             GL.ColorPointer(4, ColorPointerType.Float, 0, cubeColors);
             GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedByte, triangles);
-
-            SwapBuffers();
         }
-
-        protected override void OnClosed(EventArgs e)
+#endif
+        /// <summary>
+        /// Resets the mouse cursor to the center of the window.
+        /// </summary>
+        public void ResetCursor()
         {
-            base.OnClosed(e);
+            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
         }
     }
 }

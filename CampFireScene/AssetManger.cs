@@ -12,45 +12,6 @@ namespace CampFireScene
 {
     public class AssetManger
     {
-        public static float[] CubeVertexBufferData = { 
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		    -1.0f, 1.0f, 1.0f, 
-		     1.0f, 1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f, 1.0f,-1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f
-        };
-
         private string _assetDirectory;
 
         public AssetManger(string assetDirectory)
@@ -63,9 +24,9 @@ namespace CampFireScene
             //Load in all assets from the disk here.
             List<string> filesToBeParced = new List<string>();
             List<OBJobject> parcedFiles;
-            filesToBeParced.Add(@"Objects\water.obj");
+            filesToBeParced.Add(@"Objects\cube.obj");
             parcedFiles = ParceFiles(filesToBeParced);
-            parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
+            //parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
             return parcedFiles;
         }
 
@@ -172,7 +133,6 @@ namespace CampFireScene
                         normalBufferArray[j] = OBJ.normals[currentNormal * 3 - 3];
                         normalBufferArray[j + 1] = OBJ.normals[currentNormal * 3 - 2];
                         normalBufferArray[j + 2] = OBJ.normals[currentNormal * 3 - 1];
-
                     }
                 }
                 else

@@ -4,163 +4,183 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
+using OpenTK.Input;
 
 namespace CampFireScene
 {
-    /// <summary>
-    /// Manages camera logic
-    /// </summary>
-    class CameraController
+    class Camera
+    {
+        public Vector3 Position = Vector3.Zero;
+        public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
+
+        public Matrix4 GetViewMatrix()
+        {
+            Vector3 lookat = new Vector3()
+            {
+                X = (float)(Math.Sin(Orientation.X) * Math.Cos(Orientation.Y)),
+                Y = (float)(Math.Sin(Orientation.Y)),
+                Z = (float)(Math.Cos(Orientation.X) * Math.Cos(Orientation.Y))
+            };
+
+            return Matrix4.LookAt(Position, Position + lookat, Vector3.UnitY);
+        }
+
+        public void Move(Vector3 vec, float speed)
+        {
+            Move(vec.X, vec.Y, vec.Z, speed);
+        }
+
+        public void Move(float x, float y, float z, float speed)
+        {
+            Vector3 forward = new Vector3(
+                (float)(Math.Sin(Orientation.X)),
+                0,
+                (float)(Math.Cos(Orientation.X)));
+            Vector3 right = new Vector3(
+                -forward.Z,
+                0,
+                forward.Z);
+            Vector3 offset = new Vector3();
+            offset += x * right;
+            offset += y * forward;
+            offset.Y += z;
+
+            offset.NormalizeFast();
+            offset = Vector3.Multiply(offset, speed);
+
+            Position += offset;
+        }
+
+        public void Rotate(float x, float y)
+        {
+            Orientation.X = (Orientation.X + x) % (float)(Math.PI * 2);
+            Orientation.Y = Math.Max(
+                Math.Min(
+                    Orientation.Y + y,
+                    (float)(Math.PI / 2 - 0.1)),
+                (float)(-Math.PI / 2 + 0.1));
+        }
+    }
+
+    class CameraController2
     {
         private const float ASPECT = 4.0f / 3.0f;
         private const float NEAR_CLIP = 0.1f;
-        private const float FAR_CLIP = 10000.0f;
+        private const float FAR_CLIP = 100.0f;
 
-        public Matrix4 ProjectionMatrix { get; private set; }
-        public Matrix4 ViewMatrix { get; private set; }
-        public Matrix4 ModelMatrix = Matrix4.Identity;
-
-        private Vector3 _position = new Vector3(1, 1, 1);
-        private float _horizontalAngle = (float)Math.PI;
-        private float _verticalAngle = 0.0f;
-        private float _initialFoV = (float)(45.0f * (Math.PI/180.0));
-        private float _speed = 2.0f;
-        private float _mouseSpeed = 0.01f;
-        private double _xDelta = 0.0f;
-        private double _yDelta = 0.0f;
+        private Camera _camera;
         private GameWindow _window;
+        private Vector3 _moveVector;
+        private Vector2 _lastMousePos;
+        private Vector2 _delta;
 
-        private bool _isUpPressed = false;
-        private bool _isDownPressed = false;
-        private bool _isRightPressed = false;
-        private bool _isLeftPressed = false;
+        public Matrix4 ProjectionMatrix;
+        public Matrix4 ViewMatrix;
 
-        public CameraController(GameWindow window)
+        public float MoveSpeed = 0.2f;
+        public float MouseSensitivity = 0.01f;
+        public float KeyboardSpeed = 0.1f;
+
+        public CameraController2(GameWindow window)
         {
             _window = window;
             _window.KeyDown += _window_KeyDown;
             _window.KeyUp += _window_KeyUp;
-            ProjectionMatrix = Matrix4.Identity;
-            ViewMatrix = Matrix4.Identity;
+            _camera = new Camera();
+            _moveVector = new Vector3();
+            _delta = new Vector2();
         }
 
-        private void _window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        void _window_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
             switch (e.Key)
             {
-                case OpenTK.Input.Key.Left:
-                    _isLeftPressed = false;
+                case Key.W:
+                    _moveVector.Y += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.A:
-                case OpenTK.Input.Key.D:
-                    _xDelta = 0;
+                case Key.A:
+                    _moveVector.X -= KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Right:
-                    _isRightPressed = false;
+                case Key.S:
+                    _moveVector.Y -= KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Up:
-                    _isUpPressed = false;
+                case Key.D:
+                    _moveVector.X += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.W:
-                case OpenTK.Input.Key.S:
-                    _yDelta = 0;
+                case Key.Q:
+                    _moveVector.Z += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Down:
-                    _isDownPressed = false;
+                case Key.E:
+                    _moveVector.Z -= KeyboardSpeed;
+                    break;
+                case Key.Left:
+                    _delta.X += 0.1f;
+                    break;
+                case Key.Right:
+                    _delta.X -= 0.1f;
+                    break;
+                case Key.Up:
+                    _delta.Y -= 0.1f;
+                    break;
+                case Key.Down:
+                    _delta.Y += 0.1f;
                     break;
             }
         }
 
-        private void _window_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        void _window_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
             switch (e.Key)
             {
-                case OpenTK.Input.Key.A:
-                    _xDelta = -1;
+                case Key.W:
+                    _moveVector.Y -= KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Left:
-                    _isLeftPressed = true;
+                case Key.A:
+                    _moveVector.X += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.D:
-                    _xDelta = 1;
+                case Key.S:
+                    _moveVector.Y += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Right:
-                    _isRightPressed = true;
+                case Key.D:
+                    _moveVector.X -= KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.W:
-                    _yDelta = 1;
+                case Key.Q:
+                    _moveVector.Z -= KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.Up:
-                    _isUpPressed = true;
+                case Key.E:
+                    _moveVector.Z += KeyboardSpeed;
                     break;
-                case OpenTK.Input.Key.S:
-                    _yDelta = -1;
+                case Key.Left:
+                    _delta.X -= 0.1f;
                     break;
-                case OpenTK.Input.Key.Down:
-                    _isDownPressed = true;
+                case Key.Right:
+                    _delta.X += 0.1f;
+                    break;
+                case Key.Up:
+                    _delta.Y += 0.1f;
+                    break;
+                case Key.Down:
+                    _delta.Y -= 0.1f;
                     break;
             }
         }
 
         public void Update(double deltaTime)
         {
-            float deltaTimeF = (float)deltaTime;
-
-            _horizontalAngle += (float)(_mouseSpeed * _xDelta);
-            _verticalAngle += (float)(_mouseSpeed * _yDelta);
-
-            Vector3 direction = new Vector3(
-                (float)(Math.Cos(_verticalAngle) * Math.Sin(_horizontalAngle)),
-                (float)Math.Sin(_verticalAngle),
-                (float)(Math.Cos(_verticalAngle) * Math.Cos(_horizontalAngle))
-            );
-
-            Vector3 right = new Vector3(
-                (float)(Math.Sin(_horizontalAngle - Math.PI / 2)),
-                0,
-                (float)(Math.Sin(_horizontalAngle - Math.PI / 2))
-            );
-
-            Vector3 up = Vector3.Cross(right, direction);
-
-            if (_isUpPressed)
-            {
-                _position += direction * deltaTimeF * _speed;
-            }
-
-            if (_isDownPressed)
-            {
-                _position -= direction * deltaTimeF * _speed;
-            }
-
-            if (_isRightPressed)
-            {
-                _position += right * deltaTimeF * _speed;
-            }
-
-            if (_isLeftPressed)
-            {
-                _position -= right * deltaTimeF * _speed;
-            }
-
-            float FoV = _initialFoV;
-            //float FoV = _initialFoV - 5 * _window.Mouse.WheelPrecise;
-
-            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(FoV, ASPECT, NEAR_CLIP, FAR_CLIP);
-            ViewMatrix = Matrix4.LookAt(_position, _position + direction, up);
-
-#if DEBUG
-            Console.Out.Write(string.Format("{0}, {1}, {2}\r", _verticalAngle, _horizontalAngle, _position));
-#endif
+            Update((float)deltaTime);
         }
 
-        public void Reset()
+        public void Update(float deltaTime)
         {
-            ProjectionMatrix = Matrix4.Identity;
-            ViewMatrix = Matrix4.Identity;
-            _position = new Vector3(1, 1, 1);
-            _horizontalAngle = (float)Math.PI;
-            _verticalAngle = 0.0f;
+            _camera.Move(_moveVector * deltaTime, MoveSpeed);
+
+            Vector2 delta = _lastMousePos - new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+            delta *= MouseSensitivity;
+            _camera.Rotate(delta.X, delta.Y);
+            _lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+
+            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, ASPECT * (_window.Width / _window.Height), NEAR_CLIP, FAR_CLIP);
+            ViewMatrix = _camera.GetViewMatrix();
         }
     }
 }

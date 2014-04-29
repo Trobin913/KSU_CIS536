@@ -65,5 +65,25 @@ namespace CampFireScene
                 GL.BindTexture(TextureTarget.Texture2D, imageTextureHandle);
             GL.DrawArrays(PrimitiveType.Triangles, 0, triangleCount * 3);
         }
+
+        public void Render2()
+        {
+            //Send the GPU the verticies
+            GL.EnableVertexAttribArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
+
+            //Send the GPU UV coordinates
+            GL.EnableVertexAttribArray(1);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexNormalBufferHandle);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
+
+            //Draw
+            GL.DrawArrays(PrimitiveType.Triangles, 0, triangleCount);
+
+            //Disable loaded arrays
+            GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
+        }
     }
 }
