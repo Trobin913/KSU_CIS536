@@ -89,7 +89,7 @@ namespace CampFireScene
                 GL.LoadMatrix(ref cameraController.ProjectionMatrix);
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.LoadMatrix(ref cameraController.ViewMatrix);
-                //GL.Scale(Math.Sin(time)*100, Math.Sin(time)*100, Math.Sin(time)*100);
+                //GL.Scale(Math.Sin(time) * 100, Math.Sin(time) * 100, Math.Sin(time) * 100);
                 foreach (OBJobject obj in loadedAssets)
                 {
                     obj.Render();
