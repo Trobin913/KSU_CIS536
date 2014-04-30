@@ -65,7 +65,7 @@ namespace CampFireScene
             List<OBJobject> parcedFiles;
             filesToBeParced.Add(@"Objects\simpleCube.obj");
             parcedFiles = ParceFiles(filesToBeParced);
-            parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
+            //parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
             return parcedFiles;
         }
 
@@ -117,13 +117,21 @@ namespace CampFireScene
                             for (int j = 1; j < str.Length; j++)
                             {
                                 string[] subStr = str[j].Split('/');
-                                if (subStr.Length == 1);
-                                else if (subStr.Length == 2) OBJ.VTC(true);
-                                else if (subStr.Length == 3) OBJ.VTCN(true);
-                                else throw new Exception("OBJ File is corrupted");
-                                faceIndices[j - 1] = int.Parse(subStr[0]);
-                                faceTexIndices[j - 1] = int.Parse(subStr[1]);
-                                faceNormIndices[j - 1] = int.Parse(subStr[2]);
+                                if (subStr.Length >= 1)
+                                {
+                                    faceIndices[j - 1] = int.Parse(subStr[0]);
+                                }
+                                if (subStr.Length >= 2)
+                                {
+                                    OBJ.VTC(true);
+                                    faceTexIndices[j - 1] = int.Parse(subStr[1]);
+                                }
+                                if (subStr.Length >= 3)
+                                {
+                                    OBJ.VTC(false);
+                                    OBJ.VTCN(true);
+                                    faceNormIndices[j - 1] = int.Parse(subStr[2]);
+                                }
                                 //faces face = new faces() { VertexIndex1 = int.Parse(subStr[0]), textureIndex1 = int.Parse(subStr[1]), normalIndex1 = int.Parse(subStr[2]) };
                                 //OBJ.faces.Add(face);
                             }
@@ -147,10 +155,11 @@ namespace CampFireScene
 
                     }
                 }
+                OBJ.Load();
                 listOfOBJS.Add(OBJ);
 
                 
-                listOfOBJS.Add(OBJ);
+                //listOfOBJS.Add(OBJ);
             }
 
             return listOfOBJS;

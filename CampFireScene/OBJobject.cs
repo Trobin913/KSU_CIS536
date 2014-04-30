@@ -155,11 +155,17 @@ namespace CampFireScene
             for (int a = 0; a < vertexBufferArray.Length; a += 3)
                 w.WriteLine("v {0} {1} {2}", vertexBufferArray[a], vertexBufferArray[a + 1], vertexBufferArray[a + 2]);
 
-            for (int a = 0; a < vertexTextureBufferArray.Length; a += 2)
-                w.WriteLine("vt {0} {1}", vertexTextureBufferArray[a], vertexTextureBufferArray[a + 1]);
+            if (vertexAndTextureCoordinates || vertexTextureCoordinatesAndNormals)
+            {
+                for (int a = 0; a < vertexTextureBufferArray.Length; a += 2)
+                    w.WriteLine("vt {0} {1}", vertexTextureBufferArray[a], vertexTextureBufferArray[a + 1]);
+            }
 
-            for (int a = 0; a < normalBufferArray.Length; a += 3)
-                w.WriteLine("vn {0} {1} {2}", normalBufferArray[a], normalBufferArray[a + 1], normalBufferArray[a + 2]);
+            if (vertexTextureCoordinatesAndNormals)
+            {
+                for (int a = 0; a < normalBufferArray.Length; a += 3)
+                    w.WriteLine("vn {0} {1} {2}", normalBufferArray[a], normalBufferArray[a + 1], normalBufferArray[a + 2]);
+            }
 
             w.Flush();
             w.Close();
@@ -198,7 +204,7 @@ namespace CampFireScene
 
         public void Render()
         {
-            GL.EnableVertexAttribArray(vertexBufferHandle);
+            GL.EnableVertexAttribArray(0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
             GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
             if (vertexAndTextureCoordinates)
@@ -223,6 +229,5 @@ namespace CampFireScene
             GL.DisableVertexAttribArray(vertexTexturBufferHandle);
             GL.DisableVertexAttribArray(vertexNormalBufferHandle);
         }
-
     }
 }

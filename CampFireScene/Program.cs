@@ -39,11 +39,11 @@ namespace CampFireScene
             GL.EnableClientState(ArrayCap.ColorArray);
             
             //Load shaders
-            programId = ShaderUtil.LoadProgram(
-                @"Shaders\TextureFragmentShader.fragmentshader",
-                @"Shaders\TransformVertexShader.vertexshader"
-                );
-            matrixId = GL.GetUniformLocation(programId, "MVP");
+            //programId = ShaderUtil.LoadProgram(
+            //    @"Shaders\TextureFragmentShader.fragmentshader",
+            //    @"Shaders\TransformVertexShader.vertexshader"
+            //    );
+            //matrixId = GL.GetUniformLocation(programId, "MVP");
 
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
