@@ -34,7 +34,7 @@ namespace CampFireScene
 
             GL.ClearColor(Color.CornflowerBlue);
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
+            //GL.Enable(EnableCap.CullFace);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.ColorArray);
             
@@ -43,10 +43,11 @@ namespace CampFireScene
             //    @"Shaders\TextureFragmentShader.fragmentshader",
             //    @"Shaders\TransformVertexShader.vertexshader"
             //    );
-            //matrixId = GL.GetUniformLocation(programId, "MVP");
 
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
+            //foreach (OBJobject obj in loadedAssets)
+            //{ obj.Load(); }
             Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
         }
 
@@ -81,12 +82,16 @@ namespace CampFireScene
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 //renderTestCube();
+
                 GL.UseProgram(programId);
-                Matrix4 MVP = cameraController.ViewMatrix;
-                GL.UniformMatrix4(matrixId, false, ref MVP);
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadMatrix(ref cameraController.ProjectionMatrix);
+                GL.MatrixMode(MatrixMode.Modelview);
+                GL.LoadMatrix(ref cameraController.ViewMatrix);
                 foreach (OBJobject obj in loadedAssets)
                 {
-                    obj.Render();
+                    //obj.Render();
+                    obj.RenderImediate();
                 }
 
                 SwapBuffers();

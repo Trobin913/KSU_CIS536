@@ -7,28 +7,40 @@ using System.Threading.Tasks;
 
 namespace CampFireScene.Util
 {
-    public class VertexList : List<float>
+    public class Vector3List : List<float>
     {
-        public void AddVertex(float x, float y, float z)
+        public Vector3List()
+            : base()
+        { }
+
+        public Vector3List(int size)
+            : base(size * 3)
+        { }
+
+        public Vector3List(IEnumerable<float> c)
+            : base(c)
+        { }
+
+        public void Add(float x, float y, float z)
         {
             this.Add(x);
             this.Add(y);
             this.Add(z);
         }
 
-        public void AddVertex(Vector3 vertex)
+        public void Add(Vector3 vertex)
         {
-            AddVertex(vertex.X, vertex.Y, vertex.Z);
+            Add(vertex.X, vertex.Y, vertex.Z);
         }
 
-        public void RemoveVertex(int index)
+        public void RemoveVector(int index)
         {
             this.RemoveAt(index);
             this.RemoveAt(index);
             this.RemoveAt(index);
         }
 
-        public Vector3 GetVertex(int index)
+        public Vector3 GetVector(int index)
         {
             int startIndex = index * 3;
             if (startIndex >= this.Count
@@ -45,7 +57,7 @@ namespace CampFireScene.Util
                 );
         }
 
-        public int GetVertexCount()
+        public int GetVectorCount()
         {
             return this.Count / 3;
         }

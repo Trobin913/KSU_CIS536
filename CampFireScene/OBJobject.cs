@@ -7,6 +7,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System.IO;
+using CampFireScene.Util;
 
 namespace CampFireScene
 {
@@ -204,7 +205,7 @@ namespace CampFireScene
 
         public void Render()
         {
-            GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(vertexBufferHandle);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
             GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
             if (vertexAndTextureCoordinates)
@@ -228,6 +229,128 @@ namespace CampFireScene
             GL.DisableVertexAttribArray(vertexBufferHandle);
             GL.DisableVertexAttribArray(vertexTexturBufferHandle);
             GL.DisableVertexAttribArray(vertexNormalBufferHandle);
+        }
+
+        float[] cubeColors;
+
+        public void RenderImediate()
+        {
+            GL.VertexPointer(3, VertexPointerType.Float, 0, Vertices.ToArray());
+
+            if (cubeColors == null)
+            {
+                Random random = new Random();
+                cubeColors = new float[faces.Count*3];
+                for (int i = 0; i < cubeColors.Length; i++)
+                {
+                    cubeColors[i] = (float)random.NextDouble();
+                }
+            }
+
+            GL.ColorPointer(4, ColorPointerType.Float, 0, cubeColors);
+            int[] triangles = new int[faces.Count * 3];
+            for (int i = 0; i < faces.Count; i++)
+            {
+                triangles[i * 3] = (int)(faces[i].VertexIndex1 - 1);
+                triangles[i * 3 + 1] = (int)(faces[i].VertexIndex2 - 1);
+                triangles[i * 3 + 2] = (int)(faces[i].VertexIndex3 - 1);
+            }
+
+            GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
+        }
+    }
+
+    public class GLObject
+    {
+        /// <summary>
+        /// The raw verticies making up the object.
+        /// </summary>
+        public Vector3List Verticies { get; private set; }
+
+        /// <summary>
+        /// The uv coordinates for the object.
+        /// </summary>
+        public Vector2List UVs { get; private set; }
+
+        /// <summary>
+        /// Vertex normals for the object.
+        /// </summary>
+        public Vector3List Normals { get; private set; }
+
+        /// <summary>
+        /// Faces defining the object.
+        /// </summary>
+        public List<faces> Faces { get; private set; }
+
+        private int vertexBufferHandle;
+        private int vertexTexturBufferHandle;
+        private int vertexNormalBufferHandle;
+        private int imageTextureHandle;
+
+        public GLObject(float[] verticies, float[] uvs, float[] normals, faces[] faces)
+        {
+            Verticies = new Vector3List(verticies);
+            UVs = new Vector2List(uvs);
+            Normals = new Vector3List(normals);
+
+            vertexBufferHandle = -1;
+            vertexNormalBufferHandle = -1;
+            vertexTexturBufferHandle = -1;
+            imageTextureHandle = -1;
+        }
+
+        /// <summary>
+        /// Loads the object onto the graphics card. This must be called before using Render()
+        /// </summary>
+        public void Load()
+        {
+            Vector3List vertexBufferArray = new Vector3List();
+
+            foreach (faces face in Faces)
+            {
+                vertexBufferArray.Add(
+                    face.VertexIndex1,
+                    face.VertexIndex2,
+                    face.VertexIndex3
+                    );
+            }
+
+            vertexBufferHandle = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Count * sizeof(float)), vertexBufferArray.ToArray(), BufferUsageHint.StaticDraw);
+        }
+
+        /// <summary>
+        /// Renders the object.
+        /// </summary>
+        public void Render()
+        {
+        }
+
+        /// <summary>
+        /// Renders the object imediately.
+        /// </summary>
+        public void RenderImediate()
+        {
+            GL.VertexPointer(3, VertexPointerType.Float, 0, Verticies.ToArray());
+
+            float[] colors = new float[Faces.Count * 3];
+            Random random = new Random(12345);
+            for (int i = 0; i < colors.Length; i++)
+            {
+                colors[i] = (float)random.NextDouble();
+            }
+            GL.ColorPointer(4, ColorPointerType.Float, 0, colors);
+
+            int[] triangles = new int[Faces.Count * 3];
+            for (int i = 0; i < Faces.Count; i++)
+            {
+                triangles[i * 3] = (int)(Faces[i].VertexIndex1 - 1);
+                triangles[i * 3 + 1] = (int)(Faces[i].VertexIndex2 - 1);
+                triangles[i * 3 + 2] = (int)(Faces[i].VertexIndex3 - 1);
+            }
+
+            GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
         }
     }
 }

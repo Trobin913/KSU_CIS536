@@ -12,45 +12,6 @@ namespace CampFireScene
 {
     public class AssetManger
     {
-        public static float[] CubeVertexBufferData = { 
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		     1.0f, 1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		    -1.0f,-1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		    -1.0f,-1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f,-1.0f,
-		     1.0f,-1.0f,-1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		     1.0f, 1.0f,-1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		     1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f,-1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		     1.0f, 1.0f, 1.0f,
-		    -1.0f, 1.0f, 1.0f,
-		     1.0f,-1.0f, 1.0f
-        };
-
         private string _assetDirectory;
 
         public AssetManger(string assetDirectory)
@@ -63,7 +24,7 @@ namespace CampFireScene
             //Load in all assets from the disk here.
             List<string> filesToBeParced = new List<string>();
             List<OBJobject> parcedFiles;
-            filesToBeParced.Add(@"Objects\simpleCube.obj");
+            filesToBeParced.Add(@"Objects\simpleMonkey.obj");
             parcedFiles = ParceFiles(filesToBeParced);
             //parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
             return parcedFiles;
@@ -155,7 +116,7 @@ namespace CampFireScene
 
                     }
                 }
-                OBJ.Load();
+                //OBJ.Load();
                 listOfOBJS.Add(OBJ);
 
                 
