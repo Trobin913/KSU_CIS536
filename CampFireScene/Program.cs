@@ -39,11 +39,11 @@ namespace CampFireScene
             GL.EnableClientState(ArrayCap.ColorArray);
             
             //Load shaders
-            programId = ShaderUtil.LoadProgram(
-                @"Shaders\TextureFragmentShader.fragmentshader",
-                @"Shaders\TransformVertexShader.vertexshader"
-                );
-            matrixId = GL.GetUniformLocation(programId, "MVP");
+            //programId = ShaderUtil.LoadProgram(
+            //    @"Shaders\TextureFragmentShader.fragmentshader",
+            //    @"Shaders\TransformVertexShader.vertexshader"
+            //    );
+            //matrixId = GL.GetUniformLocation(programId, "MVP");
 
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
@@ -81,7 +81,7 @@ namespace CampFireScene
             //renderTestCube();
             GL.UseProgram(programId);
             Matrix4 MVP = cameraController.ViewMatrix;
-            GL.UniformMatrix4(matrixId, false, ref MVP); 
+            GL.UniformMatrix4(matrixId, false, ref MVP);
             foreach (OBJobject obj in loadedAssets)
             {
                 obj.Render();
