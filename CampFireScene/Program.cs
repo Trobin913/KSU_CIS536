@@ -18,14 +18,14 @@ namespace CampFireScene
                 p.Run(60.0);
         }
 
-        CameraController2 cameraController;
+        CameraController cameraController;
         List<OBJobject> loadedAssets;
         int programId;
         int matrixId;
 
         public Program()
         {
-            cameraController = new CameraController2(this);
+            cameraController = new CameraController(this);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -76,23 +76,40 @@ namespace CampFireScene
         {
             base.OnRenderFrame(e);
 
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            //renderTestCube();
-            GL.UseProgram(programId);
-            Matrix4 MVP = cameraController.ViewMatrix;
-            GL.UniformMatrix4(matrixId, false, ref MVP); 
-            foreach (OBJobject obj in loadedAssets)
+            try
             {
-                obj.Render();
-            }
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            SwapBuffers();
+                //renderTestCube();
+                GL.UseProgram(programId);
+                Matrix4 MVP = cameraController.ViewMatrix;
+                GL.UniformMatrix4(matrixId, false, ref MVP);
+                foreach (OBJobject obj in loadedAssets)
+                {
+                    obj.Render();
+                }
+
+                SwapBuffers();
+            }
+            catch (Exception ex)
+            {
+                PrintError();
+                Console.Out.WriteLine(ex.ToString());
+            }
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+        }
+
+        private void PrintError()
+        {
+            ErrorCode ec = GL.GetError();
+            if (ec != 0)
+            {
+                Console.Out.WriteLine(ec.ToString());
+            }
         }
 
 #if DEBUG

@@ -62,7 +62,7 @@ namespace CampFireScene
         }
     }
 
-    class CameraController2
+    class CameraController
     {
         private const float ASPECT = 4.0f / 3.0f;
         private const float NEAR_CLIP = 0.1f;
@@ -81,7 +81,7 @@ namespace CampFireScene
         public float MouseSensitivity = 0.01f;
         public float KeyboardSpeed = 0.1f;
 
-        public CameraController2(GameWindow window)
+        public CameraController(GameWindow window)
         {
             _window = window;
             _window.KeyDown += _window_KeyDown;

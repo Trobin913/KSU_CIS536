@@ -63,7 +63,7 @@ namespace CampFireScene
             //Load in all assets from the disk here.
             List<string> filesToBeParced = new List<string>();
             List<OBJobject> parcedFiles;
-            filesToBeParced.Add(@"Objects\cube.obj");
+            filesToBeParced.Add(@"Objects\simpleCube.obj");
             parcedFiles = ParceFiles(filesToBeParced);
             parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
             return parcedFiles;
