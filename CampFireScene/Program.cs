@@ -22,6 +22,7 @@ namespace CampFireScene
         List<OBJobject> loadedAssets;
         int programId;
         int matrixId;
+        double time; 
 
         public Program()
         {
@@ -39,10 +40,10 @@ namespace CampFireScene
             GL.EnableClientState(ArrayCap.ColorArray);
             
             //Load shaders
-            //programId = ShaderUtil.LoadProgram(
-            //    @"Shaders\TextureFragmentShader.fragmentshader",
-            //    @"Shaders\TransformVertexShader.vertexshader"
-            //    );
+            programId = ShaderUtil.LoadProgram(
+                @"Shaders\TextureFragmentShader.fragmentshader",
+                @"Shaders\TransformVertexShader.vertexshader"
+                );
 
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
@@ -76,7 +77,7 @@ namespace CampFireScene
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-
+            time += e.Time;
             try
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -88,10 +89,11 @@ namespace CampFireScene
                 GL.LoadMatrix(ref cameraController.ProjectionMatrix);
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.LoadMatrix(ref cameraController.ViewMatrix);
+                //GL.Scale(Math.Sin(time)*100, Math.Sin(time)*100, Math.Sin(time)*100);
                 foreach (OBJobject obj in loadedAssets)
                 {
-                    //obj.Render();
-                    obj.RenderImediate();
+                    obj.Render();
+                    //obj.RenderImediate();
                 }
 
                 SwapBuffers();

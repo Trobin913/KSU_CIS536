@@ -116,7 +116,7 @@ namespace CampFireScene
 
                     }
                 }
-                //OBJ.Load();
+                OBJ.Load();
                 listOfOBJS.Add(OBJ);
 
                 

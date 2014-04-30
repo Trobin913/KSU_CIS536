@@ -96,22 +96,22 @@ namespace CampFireScene
             switch (e.Key)
             {
                 case Key.W:
-                    _moveVector.Y += KeyboardSpeed;
-                    break;
-                case Key.A:
-                    _moveVector.X -= KeyboardSpeed;
-                    break;
-                case Key.S:
                     _moveVector.Y -= KeyboardSpeed;
                     break;
-                case Key.D:
+                case Key.A:
                     _moveVector.X += KeyboardSpeed;
                     break;
+                case Key.S:
+                    _moveVector.Y += KeyboardSpeed;
+                    break;
+                case Key.D:
+                    _moveVector.X -= KeyboardSpeed;
+                    break;
                 case Key.Q:
-                    _moveVector.Z += KeyboardSpeed;
+                    _moveVector.Z -= KeyboardSpeed;
                     break;
                 case Key.E:
-                    _moveVector.Z -= KeyboardSpeed;
+                    _moveVector.Z += KeyboardSpeed;
                     break;
                 case Key.Left:
                     _delta.X += 0.1f;
@@ -133,22 +133,22 @@ namespace CampFireScene
             switch (e.Key)
             {
                 case Key.W:
-                    _moveVector.Y -= KeyboardSpeed;
-                    break;
-                case Key.A:
-                    _moveVector.X += KeyboardSpeed;
-                    break;
-                case Key.S:
                     _moveVector.Y += KeyboardSpeed;
                     break;
-                case Key.D:
+                case Key.A:
                     _moveVector.X -= KeyboardSpeed;
                     break;
+                case Key.S:
+                    _moveVector.Y -= KeyboardSpeed;
+                    break;
+                case Key.D:
+                    _moveVector.X += KeyboardSpeed;
+                    break;
                 case Key.Q:
-                    _moveVector.Z -= KeyboardSpeed;
+                    _moveVector.Z += KeyboardSpeed;
                     break;
                 case Key.E:
-                    _moveVector.Z += KeyboardSpeed;
+                    _moveVector.Z -= KeyboardSpeed;
                     break;
                 case Key.Left:
                     _delta.X -= 0.1f;

@@ -200,35 +200,35 @@ namespace CampFireScene
                 vertexBufferHandle = GL.GenBuffer();
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Length * sizeof(float)), vertexBufferArray, BufferUsageHint.StaticDraw);
+                //GL.BufferData<float>(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Length * sizeof(float)), vertexBufferArray, BufferUsageHint.StaticDraw);
             }
         }
 
         public void Render()
         {
-            GL.EnableVertexAttribArray(vertexBufferHandle);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
-            GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
+            GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
+            GL.EnableClientState(ArrayCap.VertexArray);
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
+            //GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
             if (vertexAndTextureCoordinates)
             {
-                GL.EnableVertexAttribArray(vertexTexturBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexTexturBufferHandle);
                 GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, 0);
             }
             else if (vertexTextureCoordinatesAndNormals)
             {
-                GL.EnableVertexAttribArray(vertexTexturBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexTexturBufferHandle);
                 GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, 0);
-                GL.EnableVertexAttribArray(vertexNormalBufferHandle);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vertexNormalBufferHandle);
                 GL.NormalPointer(NormalPointerType.Float, 0, 0);
             }
             if (imageTextureHandle != -1)
                 GL.BindTexture(TextureTarget.Texture2D, imageTextureHandle);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
+            GL.VertexPointer(3, VertexPointerType.Float, 0, IntPtr.Zero);
             GL.DrawArrays(PrimitiveType.Triangles, 0, triangleCount * 3);
-            GL.DisableVertexAttribArray(vertexBufferHandle);
-            GL.DisableVertexAttribArray(vertexTexturBufferHandle);
-            GL.DisableVertexAttribArray(vertexNormalBufferHandle);
+            GL.PopClientAttrib();
         }
 
         float[] cubeColors;
@@ -350,7 +350,8 @@ namespace CampFireScene
                 triangles[i * 3 + 2] = (int)(Faces[i].VertexIndex3 - 1);
             }
 
-            GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
+            //GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, triangles.Length);
         }
     }
 }
