@@ -23,7 +23,8 @@ namespace CampFireScene
         public List<float> uvs;
         public List<float> normals;
         public List<faces> faces;
-        
+        public int shadersID;
+
         public int[] indicies;
         public bool vertexAndTextureCoordinates;
         public bool vertexTextureCoordinatesAndNormals;
@@ -105,6 +106,7 @@ namespace CampFireScene
                     vertexBufferArray[j * 9 + 6] = Vertices[currentVert * 3 - 3];
                     vertexBufferArray[j * 9 + 7] = Vertices[currentVert * 3 - 2];
                     vertexBufferArray[j * 9 + 8] = Vertices[currentVert * 3 - 1];
+
                     int currentTexture = faces[j].textureIndex1;
                     vertexTextureBufferArray[j * 6] = uvs[currentTexture * 2 - 2];
                     vertexTextureBufferArray[j * 6 + 1] = uvs[currentTexture * 2 - 1];
@@ -114,6 +116,7 @@ namespace CampFireScene
                     currentTexture = faces[j].textureIndex3;
                     vertexTextureBufferArray[j * 6 + 4] = uvs[currentTexture * 2 - 2];
                     vertexTextureBufferArray[j * 6 + 5] = uvs[currentTexture * 2 - 1];
+
                     int currentNormal = faces[j].normalIndex1;
                     normalBufferArray[j * 9] = normals[currentNormal * 3 - 3];
                     normalBufferArray[j * 9 + 1] = normals[currentNormal * 3 - 3];

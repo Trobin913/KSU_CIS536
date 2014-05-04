@@ -25,9 +25,16 @@ namespace CampFireScene
             List<string> filesToBeParced = new List<string>();
             List<OBJobject> parcedFiles;
             //filesToBeParced.Add(@"Objects\simpleMonkey.obj");
-            filesToBeParced.Add(@"Objects\untitled.obj");
+            //filesToBeParced.Add(@"Objects\untitled.obj");
+            //filesToBeParced.Add(@"Objects\SkyBoxWithoutTexture.obj");
+            filesToBeParced.Add(@"Objects\SkyBox.obj");
+            filesToBeParced.Add(@"Objects\SkyBoxWater.obj");
+            //filesToBeParced.Add(@"Objects\SkyBoxIslandwithoutTexture.obj");
+            filesToBeParced.Add(@"Objects\SkyBoxIsland.obj");
             parcedFiles = ParceFiles(filesToBeParced);
-            //parcedFiles[0].imageTextureHandle = loadImage(@"Images\water.jpg");
+            parcedFiles[0].imageTextureHandle = loadImage(@"Images\SkyBox.jpg");
+            parcedFiles[1].imageTextureHandle = loadImage(@"Images\water.jpg");
+            parcedFiles[2].imageTextureHandle = loadImage(@"Images\BeachSand.jpg");
             return parcedFiles;
         }
 
@@ -57,10 +64,9 @@ namespace CampFireScene
 
                         case "vt":
 
-                            for (int j = 1; j <= 2; j++)
-                            {
-                                OBJ.uvs.Add(float.Parse(str[j]));
-                            }
+                            OBJ.uvs.Add(float.Parse(str[1]));
+                            OBJ.uvs.Add(1 - float.Parse(str[2]));
+                            
                             break;
 
                         case "vn":
@@ -103,8 +109,8 @@ namespace CampFireScene
                                 VertexIndex2 = faceIndices[1],
                                 VertexIndex3 = faceIndices[2],
                                 textureIndex1 = faceTexIndices[0],
-                                textureIndex2 = faceIndices[1],
-                                textureIndex3 = faceIndices[2],
+                                textureIndex2 = faceTexIndices[1],
+                                textureIndex3 = faceTexIndices[2],
                                 normalIndex1 = faceNormIndices[0],
                                 normalIndex2 = faceNormIndices[1],
                                 normalIndex3 = faceNormIndices[2]

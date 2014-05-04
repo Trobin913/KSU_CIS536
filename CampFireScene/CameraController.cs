@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Input;
+using OpenTK.Graphics.OpenGL;
 
 namespace CampFireScene
 {
@@ -66,7 +67,7 @@ namespace CampFireScene
     {
         private const float ASPECT = 4.0f / 3.0f;
         private const float NEAR_CLIP = 0.1f;
-        private const float FAR_CLIP = 100.0f;
+        private const float FAR_CLIP = 1000.0f;
 
         private Camera _camera;
         private GameWindow _window;
@@ -97,21 +98,27 @@ namespace CampFireScene
             {
                 case Key.W:
                     _moveVector.Y -= KeyboardSpeed;
+                    Console.WriteLine("Editing y: " + _moveVector.Y);
                     break;
                 case Key.A:
                     _moveVector.X += KeyboardSpeed;
+                    Console.WriteLine("Editing x: " + _moveVector.X);
                     break;
                 case Key.S:
                     _moveVector.Y += KeyboardSpeed;
+                    Console.WriteLine("Editing y: " + _moveVector.Y);
                     break;
                 case Key.D:
                     _moveVector.X -= KeyboardSpeed;
+                    Console.WriteLine("Editing x: " + _moveVector.X);
                     break;
                 case Key.Q:
                     _moveVector.Z -= KeyboardSpeed;
+                    Console.WriteLine("Editing z: " + _moveVector.Z);
                     break;
                 case Key.E:
                     _moveVector.Z += KeyboardSpeed;
+                    Console.WriteLine("Editing z: " + _moveVector.Z);
                     break;
                 case Key.Left:
                     _delta.X += 0.1f;
@@ -133,22 +140,34 @@ namespace CampFireScene
             switch (e.Key)
             {
                 case Key.W:
+                    if (_moveVector.Y == 0)
                     _moveVector.Y += KeyboardSpeed;
+                    Console.WriteLine("Editing y: " + _moveVector.Y);
                     break;
                 case Key.A:
+                    if (_moveVector.X == 0)
                     _moveVector.X -= KeyboardSpeed;
+                    Console.WriteLine("Editing x: " + _moveVector.X);
                     break;
                 case Key.S:
+                    if (_moveVector.Y == 0)
                     _moveVector.Y -= KeyboardSpeed;
+                    Console.WriteLine("Editing y: " + _moveVector.Y);
                     break;
                 case Key.D:
+                    if (_moveVector.X == 0)
                     _moveVector.X += KeyboardSpeed;
+                    Console.WriteLine("Editing x: " + _moveVector.X);
                     break;
                 case Key.Q:
+                    if (_moveVector.Z == 0)
                     _moveVector.Z += KeyboardSpeed;
+                    Console.WriteLine("Editing z: " + _moveVector.Z);
                     break;
                 case Key.E:
+                    if (_moveVector.Z == 0)
                     _moveVector.Z -= KeyboardSpeed;
+                    Console.WriteLine("Editing z: " + _moveVector.Z);
                     break;
                 case Key.Left:
                     _delta.X -= 0.1f;

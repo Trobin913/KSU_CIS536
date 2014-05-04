@@ -22,8 +22,10 @@ namespace CampFireScene
         List<OBJobject> loadedAssets;
         int programId;
         int matrixId;
-        double time; 
-
+        int waterProgramID;
+        int skyBoxProgramID;
+        double time;
+        Vector3 vec = new Vector3(50.0f, 0.0f, 50.0f);
         public Program()
         {
             cameraController = new CameraController(this);
@@ -38,15 +40,27 @@ namespace CampFireScene
             //GL.Enable(EnableCap.CullFace);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.ColorArray);
-            
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.Enable(EnableCap.Texture2D);
             //Load shaders
             programId = ShaderUtil.LoadProgram(
                 @"Shaders\TextureFragmentShader.fragmentshader",
                 @"Shaders\TransformVertexShader.vertexshader"
                 );
-
+            waterProgramID = ShaderUtil.LoadProgram(
+                @"Shaders\WaterFragmentShader.fragmentshader",
+                @"Shaders\WaterVertexShader.vertexshader"
+            );
+            skyBoxProgramID = ShaderUtil.LoadProgram(
+                @"Shaders\SkyBoxTextureFragmentShader.fragmentshader",
+                @"Shaders\SkyBoxTextureVertexShader.vertexshader"
+            );
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
+            loadedAssets[0].shadersID = skyBoxProgramID;
+            loadedAssets[1].shadersID = waterProgramID;
+            loadedAssets[2].shadersID = skyBoxProgramID;
+
             //foreach (OBJobject obj in loadedAssets)
             //{ obj.Load(); }
             Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
@@ -90,11 +104,22 @@ namespace CampFireScene
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.LoadMatrix(ref cameraController.ViewMatrix);
                 //GL.Scale(Math.Sin(time) * 100, Math.Sin(time) * 100, Math.Sin(time) * 100);
-                foreach (OBJobject obj in loadedAssets)
-                {
-                    obj.Render();
-                    //obj.RenderImediate();
-                }
+                //foreach (OBJobject obj in loadedAssets)
+                //{
+                //    if (obj.shadersID != 0) GL.UseProgram(obj.shadersID);
+                //    else GL.UseProgram(programId);
+                //    obj.Render();
+                //    //obj.RenderImediate();
+                //}
+
+                GL.UseProgram(skyBoxProgramID);
+                loadedAssets[2].Render();
+                GL.UseProgram(waterProgramID);
+                loadedAssets[1].Render();
+                GL.UseProgram(skyBoxProgramID);
+                loadedAssets[0].Render();
+
+
 
                 SwapBuffers();
             }
