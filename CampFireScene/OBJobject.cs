@@ -211,6 +211,8 @@ namespace CampFireScene
         {
             GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
             GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.ColorArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
             //GL.VertexPointer(3, VertexPointerType.Float, 0, 0);
             if (vertexAndTextureCoordinates)

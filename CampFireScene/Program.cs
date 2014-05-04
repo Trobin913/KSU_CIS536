@@ -38,9 +38,7 @@ namespace CampFireScene
             GL.ClearColor(Color.CornflowerBlue);
             GL.Enable(EnableCap.DepthTest);
             //GL.Enable(EnableCap.CullFace);
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.ColorArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
+
             GL.Enable(EnableCap.Texture2D);
             //Load shaders
             programId = ShaderUtil.LoadProgram(
@@ -115,7 +113,7 @@ namespace CampFireScene
                 //    //obj.RenderImediate();
                 //}
                 GL.Translate(50.0f, 0.0f, 50.0f);
-                GL.UseProgram(programId);
+                GL.UseProgram(skyBoxProgramID);
                 loadedAssets[2].Render();
                 GL.Translate(-50.0f, 0.0f, -50.0f);
                 GL.UseProgram(skyBoxProgramID);

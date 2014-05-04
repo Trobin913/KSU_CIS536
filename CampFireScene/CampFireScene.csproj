@@ -96,12 +96,6 @@
     <None Include="Objects\SkyBoxWithoutTexture.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Objects\untitled.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Objects\water.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Shaders\SkyBoxTextureFragmentShader.fragmentshader">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
