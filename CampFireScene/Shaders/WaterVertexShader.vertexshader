@@ -1,0 +1,16 @@
+uniform vec4 originPoint;
+
+void main(void)
+{
+	vec4 temp = ftransform();
+	float Distance = distance(originPoint, temp);
+	gl_Position = new vec4(
+		temp[0], 
+		sin(5/Distance)*100, 
+		temp[2],
+		1
+	);
+	//gl_Position = ftransform();
+}
+
+
