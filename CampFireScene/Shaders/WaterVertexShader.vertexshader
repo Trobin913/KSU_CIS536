@@ -4,7 +4,7 @@ void main(void)
 {
 	vec4 temp = ftransform();
 	float Distance = distance(originPoint, temp);
-	gl_Position = new vec4(
+	gl_Position = vec4(
 		temp[0], 
 		sin(5/Distance)*100, 
 		temp[2],
