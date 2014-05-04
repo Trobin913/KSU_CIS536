@@ -1,15 +1,27 @@
-uniform vec4 originPoint;
+uniform vec3 originPoint;
 
 void main(void)
 {
-	vec4 temp = ftransform();
-	float Distance = distance(originPoint, temp);
-	gl_Position = vec4(
+	//vec4 temp = ftransform();
+	//float Distance = distance(originPoint, temp);
+	/*gl_Position = vec4(
 		temp[0], 
 		sin(5/Distance)*100, 
 		temp[2],
 		1
+	);*/
+	float originalY = gl_Vertex[1];
+	float Distance = distance(originPoint, gl_Vertex);
+	originalY = sin(5/Distance)*100;
+	vec4 newVector = vec4(
+		gl_Vertex[0],
+		originalY,
+		gl_Vertex[2],
+		1
 	);
+
+	gl_Position = gl_ModelViewProjectionMatrix*newVector;
+
 	//gl_Position = ftransform();
 }
 

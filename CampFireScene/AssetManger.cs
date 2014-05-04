@@ -34,7 +34,7 @@ namespace CampFireScene
             parcedFiles = ParceFiles(filesToBeParced);
             parcedFiles[0].imageTextureHandle = loadImage(@"Images\SkyBox.jpg");
             parcedFiles[1].imageTextureHandle = loadImage(@"Images\water.jpg");
-            parcedFiles[2].imageTextureHandle = loadImage(@"Images\BeachSand.jpg");
+            //parcedFiles[2].imageTextureHandle = loadImage(@"Images\BeachSand.jpg");
             return parcedFiles;
         }
 

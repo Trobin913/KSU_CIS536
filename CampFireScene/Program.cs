@@ -25,7 +25,7 @@ namespace CampFireScene
         int waterProgramID;
         int skyBoxProgramID;
         double time;
-        Vector4 vec = new Vector4(50.0f, 0.0f, 50.0f,1.0f);
+        Vector3 vec = new Vector3(50.0f, 0.0f, 50.0f);
         public Program()
         {
             cameraController = new CameraController(this);
@@ -62,7 +62,7 @@ namespace CampFireScene
             loadedAssets[2].shadersID = skyBoxProgramID;
 
             int vecId = GL.GetUniformLocation(waterProgramID, "originPoint");
-            GL.Uniform4(vecId, vec);
+            GL.Uniform3(vecId, vec);
 
             //foreach (OBJobject obj in loadedAssets)
             //{ obj.Load(); }
@@ -115,10 +115,10 @@ namespace CampFireScene
                 //    //obj.RenderImediate();
                 //}
                 GL.Translate(50.0f, 0.0f, 50.0f);
-                GL.UseProgram(skyBoxProgramID);
+                GL.UseProgram(programId);
                 loadedAssets[2].Render();
                 GL.Translate(-50.0f, 0.0f, -50.0f);
-                GL.UseProgram(waterProgramID);
+                GL.UseProgram(skyBoxProgramID);
                 loadedAssets[1].Render();
                 GL.UseProgram(skyBoxProgramID);
                 loadedAssets[0].Render();
