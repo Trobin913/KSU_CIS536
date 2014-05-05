@@ -1,0 +1,29 @@
+varying vec3 light;
+varying vec3 normal;
+uniform vec3 originPoint;
+uniform float Wavetime;
+void main(void)
+{
+	//int limit = 5;
+	normal = normalize(gl_NormalMatrix * gl_Normal);
+    light = normalize(vec3(gl_LightSource[0].position));
+	vec3 temp = vec3(gl_Vertex[0], gl_Vertex[1], gl_Vertex[2]);
+	float Distance = distance(originPoint, temp);
+	float wave = max(min(sin((Wavetime)+Distance) / (Distance/10), .5), -.5);
+	if (Distance < 6.9999)
+	{
+	  wave = 0;
+	}
+	vec4 position = vec4(
+		gl_Vertex[0],
+		wave,
+		gl_Vertex[2],
+		1
+	);
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = gl_ModelViewProjectionMatrix*position;
+	normal[1] = wave;
+
+	//vec4 normal4 = position; 
+	//normal = vec3(normal4[0], normal4[1], normal4[2]);
+}

@@ -24,8 +24,13 @@ namespace CampFireScene
         int matrixId;
         int waterProgramID;
         int skyBoxProgramID;
+        int lightProgramID;
+        int waterLightProgramID;
         double time;
-        Vector3 vec = new Vector3(50.0f, 0.0f, 50.0f);
+        float temp = 5;
+        int vecId;
+        int timeId;
+        Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
         public Program()
         {
             cameraController = new CameraController(this);
@@ -37,6 +42,9 @@ namespace CampFireScene
 
             GL.ClearColor(Color.CornflowerBlue);
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.NormalArray);
+            GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Light0);
             //GL.Enable(EnableCap.CullFace);
 
             GL.Enable(EnableCap.Texture2D);
@@ -45,25 +53,43 @@ namespace CampFireScene
                 @"Shaders\TextureFragmentShader.fragmentshader",
                 @"Shaders\TransformVertexShader.vertexshader"
                 );
-            waterProgramID = ShaderUtil.LoadProgram(
-                @"Shaders\WaterFragmentShader.fragmentshader",
-                @"Shaders\WaterVertexShader.vertexshader"
-            );
+            //waterProgramID = ShaderUtil.LoadProgram(
+            //    @"Shaders\WaterFragmentShader.fragmentshader",
+            //    @"Shaders\WaterVertexShader.vertexshader"
+            //);
             skyBoxProgramID = ShaderUtil.LoadProgram(
                 @"Shaders\SkyBoxTextureFragmentShader.fragmentshader",
                 @"Shaders\SkyBoxTextureVertexShader.vertexshader"
             );
+            lightProgramID = ShaderUtil.LoadProgram(
+                @"Shaders\LightFragmentShader.fragmentshader",
+                @"Shaders\LightVertexShader.vertexshader"
+            );
+            waterLightProgramID = ShaderUtil.LoadProgram(
+                @"Shaders\WaterLightFragmentShader.fragmentshader",
+                @"Shaders\WaterLightVertexShader.vertexshader"
+            );
+
+            GL.UseProgram(waterLightProgramID);
+            GL.ShadeModel(ShadingModel.Smooth);
+            GL.Material(MaterialFace.Front, MaterialParameter.Specular, new float[] { 4.0f, 4.0f, 4.0f, 1.0f });
+            //GL.Material(MaterialFace.Front, MaterialParameter.Shininess, 0.1f);
+            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, new float[] { 0.4f, 0.4f, 0.4f, 1.0f });
+            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new float[] { .4f, .4f, 0.4f, 1.0f });
+            GL.Light(LightName.Light0, LightParameter.Position, new float[] { 0.0f, 1.0f, 0.0f, 1.0f });
+
+
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
             loadedAssets[0].shadersID = skyBoxProgramID;
-            loadedAssets[1].shadersID = waterProgramID;
-            loadedAssets[2].shadersID = skyBoxProgramID;
+            loadedAssets[1].shadersID = waterLightProgramID;
+            loadedAssets[2].shadersID = lightProgramID;
 
-            int vecId = GL.GetUniformLocation(waterProgramID, "originPoint");
-            GL.Uniform3(vecId, vec);
+            GL.UseProgram(waterLightProgramID);
 
-            //foreach (OBJobject obj in loadedAssets)
-            //{ obj.Load(); }
+            vecId = GL.GetUniformLocation(waterLightProgramID, "originPoint");
+            timeId = GL.GetUniformLocation(waterLightProgramID, "Wavetime");
+
             Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
         }
 
@@ -93,33 +119,31 @@ namespace CampFireScene
         {
             base.OnRenderFrame(e);
             time += e.Time;
+            
             try
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 //renderTestCube();
 
-                GL.UseProgram(programId);
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref cameraController.ProjectionMatrix);
+                GL.MultMatrix(ref cameraController.ViewMatrix);
                 GL.MatrixMode(MatrixMode.Modelview);
-                GL.LoadMatrix(ref cameraController.ViewMatrix);
-                //GL.Scale(Math.Sin(time) * 100, Math.Sin(time) * 100, Math.Sin(time) * 100);
-                //foreach (OBJobject obj in loadedAssets)
-                //{
-                //    if (obj.shadersID != 0) GL.UseProgram(obj.shadersID);
-                //    else GL.UseProgram(programId);
-                //    obj.Render();
-                //    //obj.RenderImediate();
-                //}
-                GL.Translate(50.0f, 0.0f, 50.0f);
-                GL.UseProgram(skyBoxProgramID);
-                loadedAssets[2].Render();
-                GL.Translate(-50.0f, 0.0f, -50.0f);
-                GL.UseProgram(skyBoxProgramID);
-                loadedAssets[1].Render();
-                GL.UseProgram(skyBoxProgramID);
-                loadedAssets[0].Render();
+                GL.LoadIdentity();
+
+                
+                foreach (OBJobject obj in loadedAssets)
+                {
+                    if (obj.shadersID != 0) GL.UseProgram(obj.shadersID);
+                    else GL.UseProgram(programId);
+                    if (obj.shadersID == waterLightProgramID)
+                    {
+                        GL.Uniform3(vecId, vec);
+                        GL.Uniform1(timeId, (float)time);
+                    }
+                    obj.Render();
+                }
 
 
 
@@ -130,6 +154,10 @@ namespace CampFireScene
                 PrintError();
                 Console.Out.WriteLine(ex.ToString());
             }
+        }
+        private void setUniforms()
+        {
+
         }
 
         protected override void OnClosed(EventArgs e)
