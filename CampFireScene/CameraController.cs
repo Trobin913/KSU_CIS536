@@ -80,108 +80,14 @@ namespace CampFireScene
 
         public float MoveSpeed = 0.2f;
         public float MouseSensitivity = 0.01f;
-        public float KeyboardSpeed = 0.1f;
+        public float KeyboardSensitivity = 0.1f;
 
         public CameraController(GameWindow window)
         {
             _window = window;
-            _window.KeyDown += _window_KeyDown;
-            _window.KeyUp += _window_KeyUp;
             _camera = new Camera();
             _moveVector = new Vector3();
             _delta = new Vector2();
-        }
-
-        void _window_KeyUp(object sender, KeyboardKeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.W:
-                    _moveVector.Y -= KeyboardSpeed;
-                    Console.WriteLine("Editing y: " + _moveVector.Y);
-                    break;
-                case Key.A:
-                    _moveVector.X += KeyboardSpeed;
-                    Console.WriteLine("Editing x: " + _moveVector.X);
-                    break;
-                case Key.S:
-                    _moveVector.Y += KeyboardSpeed;
-                    Console.WriteLine("Editing y: " + _moveVector.Y);
-                    break;
-                case Key.D:
-                    _moveVector.X -= KeyboardSpeed;
-                    Console.WriteLine("Editing x: " + _moveVector.X);
-                    break;
-                case Key.Q:
-                    _moveVector.Z -= KeyboardSpeed;
-                    Console.WriteLine("Editing z: " + _moveVector.Z);
-                    break;
-                case Key.E:
-                    _moveVector.Z += KeyboardSpeed;
-                    Console.WriteLine("Editing z: " + _moveVector.Z);
-                    break;
-                case Key.Left:
-                    _delta.X += 0.1f;
-                    break;
-                case Key.Right:
-                    _delta.X -= 0.1f;
-                    break;
-                case Key.Up:
-                    _delta.Y -= 0.1f;
-                    break;
-                case Key.Down:
-                    _delta.Y += 0.1f;
-                    break;
-            }
-        }
-
-        void _window_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.W:
-                    if (_moveVector.Y == 0)
-                    _moveVector.Y += KeyboardSpeed;
-                    Console.WriteLine("Editing y: " + _moveVector.Y);
-                    break;
-                case Key.A:
-                    if (_moveVector.X == 0)
-                    _moveVector.X -= KeyboardSpeed;
-                    Console.WriteLine("Editing x: " + _moveVector.X);
-                    break;
-                case Key.S:
-                    if (_moveVector.Y == 0)
-                    _moveVector.Y -= KeyboardSpeed;
-                    Console.WriteLine("Editing y: " + _moveVector.Y);
-                    break;
-                case Key.D:
-                    if (_moveVector.X == 0)
-                    _moveVector.X += KeyboardSpeed;
-                    Console.WriteLine("Editing x: " + _moveVector.X);
-                    break;
-                case Key.Q:
-                    if (_moveVector.Z == 0)
-                    _moveVector.Z += KeyboardSpeed;
-                    Console.WriteLine("Editing z: " + _moveVector.Z);
-                    break;
-                case Key.E:
-                    if (_moveVector.Z == 0)
-                    _moveVector.Z -= KeyboardSpeed;
-                    Console.WriteLine("Editing z: " + _moveVector.Z);
-                    break;
-                case Key.Left:
-                    _delta.X -= 0.1f;
-                    break;
-                case Key.Right:
-                    _delta.X += 0.1f;
-                    break;
-                case Key.Up:
-                    _delta.Y += 0.1f;
-                    break;
-                case Key.Down:
-                    _delta.Y -= 0.1f;
-                    break;
-            }
         }
 
         public void Update(double deltaTime)
@@ -191,7 +97,7 @@ namespace CampFireScene
 
         public void Update(float deltaTime)
         {
-            _camera.Move(_moveVector * deltaTime, MoveSpeed);
+            _camera.Move(getMoveVector() * deltaTime, MoveSpeed);
 
             Vector2 delta = _lastMousePos - new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
             delta *= MouseSensitivity;
@@ -200,6 +106,25 @@ namespace CampFireScene
 
             ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, ASPECT * (_window.Width / _window.Height), NEAR_CLIP, FAR_CLIP);
             ViewMatrix = _camera.GetViewMatrix();
+        }
+
+        private Vector3 getMoveVector()
+        {
+            Vector3 moveVector = Vector3.Zero;
+            if (_window.Keyboard[Key.W])
+                _moveVector.Y += KeyboardSensitivity;
+            if (_window.Keyboard[Key.D])
+                _moveVector.X += KeyboardSensitivity;
+            if (_window.Keyboard[Key.S])
+                _moveVector.Y -= KeyboardSensitivity;
+            if (_window.Keyboard[Key.A])
+                _moveVector.X -= KeyboardSensitivity;
+            if (_window.Keyboard[Key.Q])
+                _moveVector.Z -= KeyboardSensitivity;
+            if (_window.Keyboard[Key.E])
+                _moveVector.Z += KeyboardSensitivity;
+
+            return moveVector;
         }
     }
 }
