@@ -11,6 +11,8 @@ namespace CampFireScene
 {
     class ShaderUtil
     {
+        private static Dictionary<string, int> LOADED_SHADERS = new Dictionary<string, int>();
+
         private static ShaderType getShaderTypeFromExtension(string shaderFilePath)
         {
             string ext = Path.GetExtension(shaderFilePath).ToLower();
@@ -50,8 +52,6 @@ namespace CampFireScene
 
             GL.LinkProgram(programId);
 
-            //Check program.
-
             foreach (int shaderId in shaderIds)
                 GL.DeleteShader(shaderId);
 
@@ -60,6 +60,9 @@ namespace CampFireScene
 
         public static int LoadShader(string shaderFilePath)
         {
+            if (LOADED_SHADERS.ContainsKey(shaderFilePath))
+                return LOADED_SHADERS[shaderFilePath];
+
             int shaderId = GL.CreateShader(getShaderTypeFromExtension(shaderFilePath));
 
             string shaderCode = string.Empty;
@@ -76,8 +79,9 @@ namespace CampFireScene
             Console.Out.WriteLine("Compiling shader: " + shaderFilePath);
             GL.ShaderSource(shaderId, shaderCode);
             GL.CompileShader(shaderId);
+            Console.Out.Write(GL.GetShaderInfoLog(shaderId));
 
-            //Check shader.
+            LOADED_SHADERS[shaderFilePath] = shaderId;
 
             return shaderId;
         }
