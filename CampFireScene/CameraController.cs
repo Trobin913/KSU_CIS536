@@ -61,6 +61,12 @@ namespace CampFireScene
                     (float)(Math.PI / 2 - 0.1)),
                 (float)(-Math.PI / 2 + 0.1));
         }
+
+        public void Reset()
+        {
+            Position = new Vector3(0f, 0f, 5f);
+            Orientation = new Vector3((float)Math.PI, 0f, 0f);
+        }
     }
 
     class CameraController
@@ -71,9 +77,7 @@ namespace CampFireScene
 
         private Camera _camera;
         private GameWindow _window;
-        private Vector3 _moveVector;
         private Vector2 _lastMousePos;
-        private Vector2 _delta;
 
         public Matrix4 ProjectionMatrix;
         public Matrix4 ViewMatrix;
@@ -86,8 +90,6 @@ namespace CampFireScene
         {
             _window = window;
             _camera = new Camera();
-            _moveVector = new Vector3();
-            _delta = new Vector2();
         }
 
         public void Update(double deltaTime)
@@ -108,22 +110,26 @@ namespace CampFireScene
             ViewMatrix = _camera.GetViewMatrix();
         }
 
+        public void Reset()
+        {
+            _camera.Reset();
+        }
+
         private Vector3 getMoveVector()
         {
             Vector3 moveVector = Vector3.Zero;
             if (_window.Keyboard[Key.W])
-                _moveVector.Y += KeyboardSensitivity;
+                moveVector.Y += KeyboardSensitivity;
             if (_window.Keyboard[Key.D])
-                _moveVector.X += KeyboardSensitivity;
+                moveVector.X += KeyboardSensitivity;
             if (_window.Keyboard[Key.S])
-                _moveVector.Y -= KeyboardSensitivity;
+                moveVector.Y -= KeyboardSensitivity;
             if (_window.Keyboard[Key.A])
-                _moveVector.X -= KeyboardSensitivity;
+                moveVector.X -= KeyboardSensitivity;
             if (_window.Keyboard[Key.Q])
-                _moveVector.Z -= KeyboardSensitivity;
+                moveVector.Z -= KeyboardSensitivity;
             if (_window.Keyboard[Key.E])
-                _moveVector.Z += KeyboardSensitivity;
-
+                moveVector.Z += KeyboardSensitivity;
             return moveVector;
         }
     }

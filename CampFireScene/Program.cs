@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using CampFireScene.Particles;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
@@ -31,6 +32,9 @@ namespace CampFireScene
         int vecId;
         int timeId;
         Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
+
+        ParticleSystem fire;
+
         public Program()
         {
             cameraController = new CameraController(this);
@@ -91,6 +95,8 @@ namespace CampFireScene
             timeId = GL.GetUniformLocation(waterLightProgramID, "Wavetime");
 
             Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
+
+            fire = new ParticleSystem(new Vector3(1), 1000);
         }
 
         protected override void OnResize(EventArgs e)
@@ -103,10 +109,14 @@ namespace CampFireScene
         {
             base.OnUpdateFrame(e);
 
-            cameraController.Update(e.Time);
+            fire.Update(e.Time);
+
             if (Focused)
             {
+                cameraController.Update(e.Time);
                 ResetCursor();
+                if (Keyboard[Key.R])
+                    cameraController.Reset();
             }
 
             if (Keyboard[Key.Escape])
@@ -123,8 +133,6 @@ namespace CampFireScene
             try
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-                //renderTestCube();
 
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref cameraController.ProjectionMatrix);
@@ -145,7 +153,7 @@ namespace CampFireScene
                     obj.Render();
                 }
 
-
+                fire.Render();
 
                 SwapBuffers();
             }
@@ -154,10 +162,6 @@ namespace CampFireScene
                 PrintError();
                 Console.Out.WriteLine(ex.ToString());
             }
-        }
-        private void setUniforms()
-        {
-
         }
 
         protected override void OnClosed(EventArgs e)
@@ -174,58 +178,6 @@ namespace CampFireScene
             }
         }
 
-#if DEBUG
-
-        float[] cubeColors = {
-			1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 1.0f, 1.0f,
-		};
-
-        byte[] triangles =
-		{
-			1, 0, 2, // front
-			3, 2, 0,
-			6, 4, 5, // back
-			4, 6, 7,
-			4, 7, 0, // left
-			7, 3, 0,
-			1, 2, 5, //right
-			2, 6, 5,
-			0, 1, 5, // top
-			0, 5, 4,
-			2, 3, 6, // bottom
-			3, 7, 6,
-		};
-
-        float[] cube = {
-			-0.5f,  0.5f,  0.5f, // vertex[0]
-			 0.5f,  0.5f,  0.5f, // vertex[1]
-			 0.5f, -0.5f,  0.5f, // vertex[2]
-			-0.5f, -0.5f,  0.5f, // vertex[3]
-			-0.5f,  0.5f, -0.5f, // vertex[4]
-			 0.5f,  0.5f, -0.5f, // vertex[5]
-			 0.5f, -0.5f, -0.5f, // vertex[6]
-			-0.5f, -0.5f, -0.5f, // vertex[7]
-		};
-
-        private void renderTestCube()
-        {
-            //GL.MatrixMode(MatrixMode.Projection);
-            //GL.LoadMatrix(ref cameraController.ProjectionMatrix);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref cameraController.ViewMatrix);
-
-            GL.VertexPointer(3, VertexPointerType.Float, 0, cube);
-            GL.ColorPointer(4, ColorPointerType.Float, 0, cubeColors);
-            GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedByte, triangles);
-        }
-#endif
         /// <summary>
         /// Resets the mouse cursor to the center of the window.
         /// </summary>
