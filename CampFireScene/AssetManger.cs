@@ -31,10 +31,18 @@ namespace CampFireScene
             filesToBeParced.Add(@"Objects\SkyBoxWater.obj");
             //filesToBeParced.Add(@"Objects\SkyBoxIslandwithoutTexture.obj");
             filesToBeParced.Add(@"Objects\SkyBoxIsland.obj");
+            //filesToBeParced.Add(@"Objects\simpleCube.obj");
+            //filesToBeParced.Add(@"Objects\Log.obj");
+            filesToBeParced.Add(@"Objects\Log.obj");
             parcedFiles = ParceFiles(filesToBeParced);
             parcedFiles[0].imageTextureHandle = loadImage(@"Images\SkyBox.jpg");
             parcedFiles[1].imageTextureHandle = loadImage(@"Images\water.jpg");
             parcedFiles[2].imageTextureHandle = loadImage(@"Images\BeachSand.jpg");
+            parcedFiles[3].imageTextureHandle = loadImage(@"Images\Wood.jpg");
+            //int woodTextureHandle = loadImage(@"Images\Wood.jpg");
+            //parcedFiles[3].imageTextureHandle = woodTextureHandle;
+            //parcedFiles[4].imageTextureHandle = woodTextureHandle;
+            //parcedFiles[5].imageTextureHandle = woodTextureHandle;
             return parcedFiles;
         }
 

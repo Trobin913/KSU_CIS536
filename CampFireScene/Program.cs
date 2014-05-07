@@ -82,12 +82,12 @@ namespace CampFireScene
             GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new float[] { .4f, .4f, 0.4f, 1.0f });
             GL.Light(LightName.Light0, LightParameter.Position, new float[] { 0.0f, 1.0f, 0.0f, 1.0f });
 
-
             //Load assets
             loadedAssets = AssetManger.LoadAssets();
             loadedAssets[0].shadersID = skyBoxProgramID;
             loadedAssets[1].shadersID = waterLightProgramID;
             loadedAssets[2].shadersID = lightProgramID;
+            //loadedAssets[3].shadersID = programId;
 
             GL.UseProgram(waterLightProgramID);
 

@@ -13,15 +13,14 @@ namespace CampFireScene.Particles
 
         private Vector3 _origPosition;
         private float _origLifeSpan;
-        private Vector3 _position;
+        public Vector3 Position;
         private Vector3 _velocity;
         private Vector3 _acceleration;
         private float _lifeSpan;
-        private int _vbo;
 
         public Particle(Vector3 position, float lifeSpan)
         {
-            _position = position;
+            Position = position;
             _lifeSpan = lifeSpan;
             _velocity = new Vector3(
                 ((float)r.NextDouble() - 0.5f), 
@@ -29,13 +28,13 @@ namespace CampFireScene.Particles
                 ((float)r.NextDouble() - 0.5f));
             _acceleration = Vector3.Zero;
 
-            _origPosition = _position;
+            _origPosition = Position;
             _origLifeSpan = _lifeSpan;
         }
 
         public Particle(Vector3 position, Vector3 velocity, Vector3 acceleration, float lifeSpan)
         {
-            _position = position;
+            Position = position;
             _lifeSpan = lifeSpan;
             _velocity = velocity;
             _acceleration = acceleration;
@@ -46,22 +45,16 @@ namespace CampFireScene.Particles
             return _lifeSpan > 0;
         }
 
-        public void Load()
-        {
-            GL.GenBuffers(1, out _vbo);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-        }
-
         public void Update(float time)
         {
-            _velocity += time * _acceleration;
-            _position += time * _velocity;
             _lifeSpan -= time;
+            float t = _origLifeSpan - _lifeSpan;
+            Position += time * (_velocity + t * _acceleration);
         }
 
         public void Render()
         {
-            GL.Vertex3(_position);
+            GL.Vertex3(Position);
         }
 
         public void Dispose()
@@ -71,7 +64,7 @@ namespace CampFireScene.Particles
 
         public void Reset()
         {
-            _position = _origPosition;
+            Position = _origPosition;
             _lifeSpan = _origLifeSpan;
             _velocity = new Vector3(
                 ((float)r.NextDouble() - 0.5f),
@@ -83,19 +76,25 @@ namespace CampFireScene.Particles
 
     public class ParticleSystem
     {
-        private const float VARIANCE = 1;
         private static Random r = new Random();
 
         private List<Particle> _particles;
         private Vector3 _position;
         private int generationRate;
         private int _particleCount;
+        private int vbo;
+
+        protected int shaderProgramId;
 
         public ParticleSystem(Vector3 position, int rate)
         {
             _position = position;
             generationRate = rate;
             _particles = new List<Particle>();
+            vbo = GL.GenBuffer();
+            shaderProgramId = ShaderUtil.LoadProgram(
+                @"Shaders\FireVertexShader.vertexshader",
+                @"Shaders\FireFragmentShader.fragmentshader");
         }
 
         public void Update(double time)
@@ -130,14 +129,31 @@ namespace CampFireScene.Particles
 
         public void Render()
         {
-            GL.UseProgram(shaderProgramId);
-            GL.PointSize(5f);
-            GL.Begin(PrimitiveType.Points);
-            foreach (Particle p in _particles.GetRange(0, _particleCount))
+            //GL.UseProgram(shaderProgramId);
+            //float[] particlePositions = getParticlePositions();
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(particlePositions.Length * sizeof(float)), particlePositions, BufferUsageHint.StaticDraw);
+            //GL.DrawArrays(PrimitiveType.Points, 0, particlePositions.Length);
+            
+            //GL.PointSize(5f);
+            //GL.Begin(PrimitiveType.Points);
+            //for (int i = 0; i < _particleCount; i++)
+            //{
+            //    _particles[i].Render();
+            //}
+            //GL.End();
+        }
+
+        private float[] getParticlePositions()
+        {
+            float[] particlePositions = new float[_particleCount * 3];
+            for (int i = 0; i < _particleCount; i++)
             {
-                p.Render();
+                particlePositions[(i*3)] = _particles[i].Position.X;
+                particlePositions[(i * 3) + 1] = _particles[i].Position.Y;
+                particlePositions[(i*3) + 2] = _particles[i].Position.Z;
             }
-            GL.End();
+            return particlePositions;
         }
 
         public void Dispose()
