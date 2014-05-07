@@ -24,13 +24,10 @@ namespace CampFireScene.Particles
             _position = position;
             _lifeSpan = lifeSpan;
             _velocity = new Vector3(
-                ((float)r.NextDouble() - 0.5f) * 2, 
-                0.3f,
-                ((float)r.NextDouble() - 0.5f)) * 2;
-            _acceleration = new Vector3(
-                (float)r.NextDouble() - 0.5f,
-                0,
-                (float)r.NextDouble() - 0.5f);
+                ((float)r.NextDouble() - 0.5f), 
+                1,
+                ((float)r.NextDouble() - 0.5f));
+            _acceleration = Vector3.Zero;
 
             _origPosition = _position;
             _origLifeSpan = _lifeSpan;
@@ -60,11 +57,6 @@ namespace CampFireScene.Particles
             _velocity += time * _acceleration;
             _position += time * _velocity;
             _lifeSpan -= time;
-            //_position = new Vector3(
-            //    (float)Math.Sin(_lifeSpan),
-            //    _position.Y + 1,
-            //    (float)Math.Cos(_lifeSpan)
-            //    );
         }
 
         public void Render()
@@ -82,18 +74,16 @@ namespace CampFireScene.Particles
             _position = _origPosition;
             _lifeSpan = _origLifeSpan;
             _velocity = new Vector3(
-                ((float)r.NextDouble() - 0.5f) * 2,
+                ((float)r.NextDouble() - 0.5f),
                 1,
-                ((float)r.NextDouble() - 0.5f)) * 2;
-            _acceleration = new Vector3(
-                (float)r.NextDouble() - 0.5f,
-                0,
-                (float)r.NextDouble() - 0.5f);
+                ((float)r.NextDouble() - 0.5f));
+            _acceleration = Vector3.Zero;
         }
     }
 
     public class ParticleSystem
     {
+        private const float VARIANCE = 1;
         private static Random r = new Random();
 
         private List<Particle> _particles;
@@ -140,7 +130,7 @@ namespace CampFireScene.Particles
 
         public void Render()
         {
-            GL.UseProgram(0);
+            GL.UseProgram(shaderProgramId);
             GL.PointSize(5f);
             GL.Begin(PrimitiveType.Points);
             foreach (Particle p in _particles.GetRange(0, _particleCount))
@@ -160,7 +150,12 @@ namespace CampFireScene.Particles
 
         protected virtual Particle createNewParticle()
         {
-            return new Particle(new Vector3(1), r.Next(100) + 1);
+            return new Particle(
+                new Vector3(
+                    (float)(_position.X + r.NextDouble() - 0.5),
+                    1,
+                    (float)(_position.Z + r.NextDouble() - 0.5)), 
+                (float)(r.NextDouble() * 3 + 0.1));
         }
     }
 }
