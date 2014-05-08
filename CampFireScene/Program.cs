@@ -38,6 +38,7 @@ namespace CampFireScene
         public Program()
         {
             cameraController = new CameraController(this);
+            KeyUp += Program_KeyUp;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -104,6 +105,21 @@ namespace CampFireScene
             base.OnResize(e);
             GL.Viewport(0, 0, Width, Height);
         }
+
+        Key[] _kCode = new Key[]
+        {
+            Key.Up,
+            Key.Up,
+            Key.Down,
+            Key.Down,
+            Key.Left,
+            Key.Right,
+            Key.Left,
+            Key.Right,
+            Key.B,
+            Key.A
+        };
+        Queue<Key> _kInput = new Queue<Key>();
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -184,6 +200,37 @@ namespace CampFireScene
         public void ResetCursor()
         {
             OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
+        }
+
+        void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
+        {
+            _kInput.Enqueue(e.Key);
+            if (_kInput.Count == _kCode.Length)
+            {
+                if (isEqual(_kInput.ToArray(), _kCode))
+                {
+                    processKCode();
+                }
+                _kInput.Dequeue();
+            }
+        }
+
+        private bool isEqual(Key[] a, Key[] b)
+        {
+            if (a.Length != b.Length)
+                return false;
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i])
+                    return false;
+            }
+            return true;
+        }
+
+        private void processKCode()
+        {
+            Console.Out.WriteLine("Konami code");
         }
     }
 }
