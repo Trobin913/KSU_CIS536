@@ -87,7 +87,7 @@ namespace CampFireScene
             loadedAssets[0].shadersID = skyBoxProgramID;
             loadedAssets[1].shadersID = waterLightProgramID;
             loadedAssets[2].shadersID = lightProgramID;
-            //loadedAssets[3].shadersID = programId;
+            loadedAssets[3].shadersID = lightProgramID;
 
             GL.UseProgram(waterLightProgramID);
 
@@ -96,7 +96,7 @@ namespace CampFireScene
 
             Console.Out.WriteLine("Loaded " + loadedAssets.Count + " obj");
 
-            fire = new ParticleSystem(new Vector3(1), 1000);
+            fire = new ParticleSystem(new Vector3(1, 1, -1), 1000);
         }
 
         protected override void OnResize(EventArgs e)

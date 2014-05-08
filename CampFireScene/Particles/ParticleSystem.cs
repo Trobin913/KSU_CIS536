@@ -123,8 +123,6 @@ namespace CampFireScene.Particles
             //Remove dead particles
             _particles = _particles.OrderBy((p) => !p.IsAlive()).ToList();
             _particleCount = _particles.Count((p) => p.IsAlive());
-
-            Console.Out.Write(string.Format("{0}:{1}\r", _particles.Count, _particleCount));
         }
 
         public void Render()
@@ -134,14 +132,15 @@ namespace CampFireScene.Particles
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(particlePositions.Length * sizeof(float)), particlePositions, BufferUsageHint.StaticDraw);
             //GL.DrawArrays(PrimitiveType.Points, 0, particlePositions.Length);
-            
-            //GL.PointSize(5f);
-            //GL.Begin(PrimitiveType.Points);
-            //for (int i = 0; i < _particleCount; i++)
-            //{
-            //    _particles[i].Render();
-            //}
-            //GL.End();
+
+            GL.UseProgram(shaderProgramId);
+            GL.PointSize(5f);
+            GL.Begin(PrimitiveType.Points);
+            for (int i = 0; i < _particleCount; i++)
+            {
+                _particles[i].Render();
+            }
+            GL.End();
         }
 
         private float[] getParticlePositions()
