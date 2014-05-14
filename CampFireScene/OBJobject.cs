@@ -6,126 +6,55 @@ using System.IO;
 
 namespace CampFireScene
 {
-    public class GLObject
-    {
-        private int imageTextureHandle;
-
-        private int vertexBufferHandle;
-
-        private int vertexNormalBufferHandle;
-
-        private int vertexTexturBufferHandle;
-
-        public GLObject(float[] verticies, float[] uvs, float[] normals, faces[] faces)
-        {
-            Verticies = new Vector3List(verticies);
-            UVs = new Vector2List(uvs);
-            Normals = new Vector3List(normals);
-
-            vertexBufferHandle = -1;
-            vertexNormalBufferHandle = -1;
-            vertexTexturBufferHandle = -1;
-            imageTextureHandle = -1;
-        }
-
-        /// <summary>
-        /// Faces defining the object.
-        /// </summary>
-        public List<faces> Faces { get; private set; }
-
-        /// <summary>
-        /// Vertex normals for the object.
-        /// </summary>
-        public Vector3List Normals { get; private set; }
-
-        /// <summary>
-        /// The uv coordinates for the object.
-        /// </summary>
-        public Vector2List UVs { get; private set; }
-
-        /// <summary>
-        /// The raw verticies making up the object.
-        /// </summary>
-        public Vector3List Verticies { get; private set; }
-
-        /// <summary>
-        /// Loads the object onto the graphics card. This must be called before using Render()
-        /// </summary>
-        public void Load()
-        {
-            Vector3List vertexBufferArray = new Vector3List();
-
-            foreach (faces face in Faces)
-            {
-                vertexBufferArray.Add(
-                    face.VertexIndex1,
-                    face.VertexIndex2,
-                    face.VertexIndex3
-                    );
-            }
-
-            vertexBufferHandle = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexBufferArray.Count * sizeof(float)), vertexBufferArray.ToArray(), BufferUsageHint.StaticDraw);
-        }
-
-        /// <summary>
-        /// Renders the object.
-        /// </summary>
-        public void Render()
-        {
-        }
-
-        /// <summary>
-        /// Renders the object imediately.
-        /// </summary>
-        public void RenderImediate()
-        {
-            GL.VertexPointer(3, VertexPointerType.Float, 0, Verticies.ToArray());
-
-            float[] colors = new float[Faces.Count * 3];
-            Random random = new Random(12345);
-            for (int i = 0; i < colors.Length; i++)
-            {
-                colors[i] = (float)random.NextDouble();
-            }
-            GL.ColorPointer(4, ColorPointerType.Float, 0, colors);
-
-            int[] triangles = new int[Faces.Count * 3];
-            for (int i = 0; i < Faces.Count; i++)
-            {
-                triangles[i * 3] = (int)(Faces[i].VertexIndex1 - 1);
-                triangles[i * 3 + 1] = (int)(Faces[i].VertexIndex2 - 1);
-                triangles[i * 3 + 2] = (int)(Faces[i].VertexIndex3 - 1);
-            }
-
-            //GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, triangles.Length);
-        }
-    }
-
+    /// <summary>
+    /// Contains properties and methods for working with object data.
+    /// </summary>
+    /// <Author>Tyler Robinson</Author>
     public class OBJobject
     {
+        /// <summary>
+        /// The faces of the object.
+        /// </summary>
         public List<faces> faces;
 
-        public int[] indicies;
-
+        /// <summary>
+        /// The normals of the object.
+        /// </summary>
         public List<float> normals;
 
+        /// <summary>
+        /// Handle to the shader to use for this object.
+        /// </summary>
         public int shadersID;
 
+        /// <summary>
+        /// The total number of triangles in the object.
+        /// </summary>
         public int triangleCount;
 
+        /// <summary>
+        /// The uvs of the object.
+        /// </summary>
         public List<float> uvs;
 
+        /// <summary>
+        /// If true, texture coordinates were loaded in.
+        /// </summary>
         public bool vertexAndTextureCoordinates;
 
+        /// <summary>
+        /// If true, texture corrdinates and normals were loaded in.
+        /// </summary>
         public bool vertexTextureCoordinatesAndNormals;
 
+        /// <summary>
+        /// The vertices for each object. Note that verticies are stored in triples. I.e. indexes 0, 1, 2 make one vertex.
+        /// </summary>
         public List<float> Vertices;
 
-        private float[] cubeColors;
-
+        /// <summary>
+        /// Creates a new obj.
+        /// </summary>
         public OBJobject()
         {
             Vertices = new List<float>();
@@ -138,14 +67,29 @@ namespace CampFireScene
             triangleCount = 0;
         }
 
+        /// <summary>
+        /// Handle to the texture.
+        /// </summary>
         public int imageTextureHandle { get; set; }
 
+        /// <summary>
+        /// Handle to the vertex buffer.
+        /// </summary>
         public int vertexBufferHandle { get; set; }
 
+        /// <summary>
+        /// Handle to the normal buffer.
+        /// </summary>
         public int vertexNormalBufferHandle { get; set; }
 
+        /// <summary>
+        /// Handle to the normal buffer.
+        /// </summary>
         public int vertexTexturBufferHandle { get; set; }
 
+        /// <summary>
+        /// Loads all nessary data for the object to the graphics card.
+        /// </summary>
         public void Load()
         {
             int faceCount = faces.Count;
@@ -300,6 +244,9 @@ namespace CampFireScene
             }
         }
 
+        /// <summary>
+        /// Draws the object.
+        /// </summary>
         public void Render()
         {
             GL.PushClientAttrib(ClientAttribMask.ClientVertexArrayBit);
@@ -329,37 +276,19 @@ namespace CampFireScene
             GL.PopClientAttrib();
         }
 
-        public void RenderImediate()
-        {
-            GL.VertexPointer(3, VertexPointerType.Float, 0, Vertices.ToArray());
-
-            if (cubeColors == null)
-            {
-                Random random = new Random();
-                cubeColors = new float[faces.Count * 3];
-                for (int i = 0; i < cubeColors.Length; i++)
-                {
-                    cubeColors[i] = (float)random.NextDouble();
-                }
-            }
-
-            GL.ColorPointer(4, ColorPointerType.Float, 0, cubeColors);
-            int[] triangles = new int[faces.Count * 3];
-            for (int i = 0; i < faces.Count; i++)
-            {
-                triangles[i * 3] = (int)(faces[i].VertexIndex1 - 1);
-                triangles[i * 3 + 1] = (int)(faces[i].VertexIndex2 - 1);
-                triangles[i * 3 + 2] = (int)(faces[i].VertexIndex3 - 1);
-            }
-
-            GL.DrawElements(PrimitiveType.Triangles, triangles.Length, DrawElementsType.UnsignedInt, triangles);
-        }
-
+        /// <summary>
+        /// Sets vertexAndTextureCoordinates
+        /// </summary>
+        /// <param name="val"></param>
         public void VTC(bool val)
         {
             vertexAndTextureCoordinates = val;
         }
 
+        /// <summary>
+        /// Sets vertexTextureCoordinatesAndNormals
+        /// </summary>
+        /// <param name="val"></param>
         public void VTCN(bool val)
         {
             vertexTextureCoordinatesAndNormals = val;

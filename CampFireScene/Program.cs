@@ -213,7 +213,7 @@ namespace CampFireScene
         }
 
         /// <summary>
-        /// Returns
+        /// Returns true if every element in both arrays are equal.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -243,11 +243,19 @@ namespace CampFireScene
             }
         }
 
+        /// <summary>
+        /// Konami code handler.
+        /// </summary>
         private void processKCode()
         {
             Console.Out.WriteLine("Konami code");
         }
 
+        /// <summary>
+        /// Pushes the key onto the _kInput stack.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
             _kInput.Enqueue(e.Key);

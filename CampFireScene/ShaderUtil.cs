@@ -5,10 +5,22 @@ using System.IO;
 
 namespace CampFireScene
 {
+    /// <summary>
+    /// Contains functions to compile shaders on the graphics card.
+    /// </summary>
+    /// <Author>Devin Kelly-Collins</Author>
     internal class ShaderUtil
     {
+        /// <summary>
+        /// Stores handles to compiled shaders for reuse.
+        /// </summary>
         private static Dictionary<string, int> LOADED_SHADERS = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Compiles each shader in the given list, then links them together into one program.
+        /// </summary>
+        /// <param name="shaders">Shaders in the program.</param>
+        /// <returns>Handle to the program.</returns>
         public static int LoadProgram(params string[] shaders)
         {
             int[] shaderIds = new int[shaders.Length];
@@ -30,6 +42,11 @@ namespace CampFireScene
             return programId;
         }
 
+        /// <summary>
+        /// Compiles a shader to the graphics card. Outputs the result of the compile to the console.
+        /// </summary>
+        /// <param name="shaderFilePath">Absolute file path to the shader.</param>
+        /// <returns>Handle to the compiled shader.</returns>
         public static int LoadShader(string shaderFilePath)
         {
             if (LOADED_SHADERS.ContainsKey(shaderFilePath))
@@ -58,6 +75,11 @@ namespace CampFireScene
             return shaderId;
         }
 
+        /// <summary>
+        /// Returns the shader type based on the extension of the file.
+        /// </summary>
+        /// <param name="shaderFilePath"></param>
+        /// <returns></returns>
         private static ShaderType getShaderTypeFromExtension(string shaderFilePath)
         {
             string ext = Path.GetExtension(shaderFilePath).ToLower();
