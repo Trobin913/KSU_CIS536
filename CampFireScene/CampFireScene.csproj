@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="AssetManger.cs" />
     <Compile Include="CameraController.cs" />
-    <Compile Include="InputManager.cs" />
     <Compile Include="OBJobject.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
