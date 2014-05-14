@@ -1,9 +1,8 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CampFireScene.Particles
 {
@@ -23,7 +22,7 @@ namespace CampFireScene.Particles
             Position = position;
             _lifeSpan = lifeSpan;
             _velocity = new Vector3(
-                ((float)r.NextDouble() - 0.5f), 
+                ((float)r.NextDouble() - 0.5f),
                 1,
                 ((float)r.NextDouble() - 0.5f));
             _acceleration = Vector3.Zero;
@@ -59,7 +58,6 @@ namespace CampFireScene.Particles
 
         public void Dispose()
         {
-
         }
 
         public void Reset()
@@ -148,9 +146,9 @@ namespace CampFireScene.Particles
             float[] particlePositions = new float[_particleCount * 3];
             for (int i = 0; i < _particleCount; i++)
             {
-                particlePositions[(i*3)] = _particles[i].Position.X;
+                particlePositions[(i * 3)] = _particles[i].Position.X;
                 particlePositions[(i * 3) + 1] = _particles[i].Position.Y;
-                particlePositions[(i*3) + 2] = _particles[i].Position.Z;
+                particlePositions[(i * 3) + 2] = _particles[i].Position.Z;
             }
             return particlePositions;
         }
@@ -169,7 +167,7 @@ namespace CampFireScene.Particles
                 new Vector3(
                     (float)(_position.X + r.NextDouble() - 0.5),
                     1,
-                    (float)(_position.Z + r.NextDouble() - 0.5)), 
+                    (float)(_position.Z + r.NextDouble() - 0.5)),
                 (float)(r.NextDouble() * 3 + 0.1));
         }
     }

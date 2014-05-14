@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
+﻿using CampFireScene.Util;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using CampFireScene.Util;
 
 namespace CampFireScene
 {
-
     public class OBJobject
     {
-        public int vertexBufferHandle{get; set;}
+        public int vertexBufferHandle { get; set; }
+
         public int vertexTexturBufferHandle { get; set; }
+
         public int vertexNormalBufferHandle { get; set; }
+
         public int imageTextureHandle { get; set; }
-        
+
         public List<float> Vertices;
         public List<float> uvs;
         public List<float> normals;
@@ -29,6 +26,7 @@ namespace CampFireScene
         public bool vertexAndTextureCoordinates;
         public bool vertexTextureCoordinatesAndNormals;
         public int triangleCount;
+
         public void VTC(bool val)
         {
             vertexAndTextureCoordinates = val;
@@ -85,7 +83,6 @@ namespace CampFireScene
                     vertexTextureBufferArray[j * 9 + 4] = uvs[currentTexture * 2 - 2];
                     vertexTextureBufferArray[j * 9 + 5] = uvs[currentTexture * 2 - 1];
                 }
-
             }
             else if (vertexTextureCoordinatesAndNormals)
             {
@@ -129,7 +126,6 @@ namespace CampFireScene
                     normalBufferArray[j * 9 + 6] = normals[currentNormal * 3 - 3];
                     normalBufferArray[j * 9 + 7] = normals[currentNormal * 3 - 3];
                     normalBufferArray[j * 9 + 8] = normals[currentNormal * 3 - 3];
-
                 }
             }
             else
@@ -236,7 +232,7 @@ namespace CampFireScene
             GL.PopClientAttrib();
         }
 
-        float[] cubeColors;
+        private float[] cubeColors;
 
         public void RenderImediate()
         {
@@ -245,7 +241,7 @@ namespace CampFireScene
             if (cubeColors == null)
             {
                 Random random = new Random();
-                cubeColors = new float[faces.Count*3];
+                cubeColors = new float[faces.Count * 3];
                 for (int i = 0; i < cubeColors.Length; i++)
                 {
                     cubeColors[i] = (float)random.NextDouble();

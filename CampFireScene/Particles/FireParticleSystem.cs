@@ -1,21 +1,16 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CampFireScene.Particles
 {
-    class FireParticle : Particle
+    internal class FireParticle : Particle
     {
         public FireParticle(Vector3 position, float life)
             : base(position, life)
         { }
     }
 
-    class FireParticleSystem : ParticleSystem
+    internal class FireParticleSystem : ParticleSystem
     {
         private int lifeId;
 

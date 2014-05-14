@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Input;
-using OpenTK.Graphics.OpenGL;
+using System;
 
 namespace CampFireScene
 {
-    class Camera
+    internal class Camera
     {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
@@ -69,7 +64,7 @@ namespace CampFireScene
         }
     }
 
-    class CameraController
+    internal class CameraController
     {
         private const float ASPECT = 4.0f / 3.0f;
         private const float NEAR_CLIP = 0.1f;

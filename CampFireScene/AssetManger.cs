@@ -1,12 +1,8 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+using System.IO;
 
 namespace CampFireScene
 {
@@ -64,7 +60,7 @@ namespace CampFireScene
 
                             OBJ.uvs.Add(float.Parse(str[1]));
                             OBJ.uvs.Add(1 - float.Parse(str[2]));
-                            
+
                             break;
 
                         case "vn":
@@ -115,16 +111,14 @@ namespace CampFireScene
                             };
                             OBJ.faces.Add(face);
                             break;
-                        
+
                         default:
                             break;
-
                     }
                 }
                 OBJ.Load();
                 listOfOBJS.Add(OBJ);
 
-                
                 //listOfOBJS.Add(OBJ);
             }
 
@@ -148,6 +142,7 @@ namespace CampFireScene
             return textureHandle;
         }
     }
+
     public class faces
     {
         public int VertexIndex1;

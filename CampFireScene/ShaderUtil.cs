@@ -1,15 +1,11 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
 using System.IO;
-using OpenTK.Graphics.OpenGL;
 
 namespace CampFireScene
 {
-    class ShaderUtil
+    internal class ShaderUtil
     {
         private static Dictionary<string, int> LOADED_SHADERS = new Dictionary<string, int>();
 
@@ -20,18 +16,25 @@ namespace CampFireScene
             {
                 case ".vertexshader":
                     return ShaderType.VertexShader;
+
                 case ".fragmentshader":
                     return ShaderType.FragmentShader;
+
                 case ".computeshader":
                     return ShaderType.ComputeShader;
+
                 case ".geometryshader":
                     return ShaderType.GeometryShader;
+
                 case ".geometryshaderext":
                     return ShaderType.GeometryShaderExt;
+
                 case ".tesscontrolshader":
                     return ShaderType.TessControlShader;
+
                 case ".tessevaluationshader":
                     return ShaderType.TessEvaluationShader;
+
                 default:
                     throw new Exception("Unknown shader extention: " + ext);
             }

@@ -5,35 +5,55 @@ using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CampFireScene
 {
-    class Program : GameWindow
+    /// <summary>
+    /// Extends GameWindow to add custom logic for our rendering engine.
+    /// </summary>
+    internal class Program : GameWindow
     {
+        /// <summary>
+        /// Creates and runs a new GameWindow.
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             using (Program p = new Program())
                 p.Run(60.0);
         }
 
-        CameraController cameraController;
-        List<OBJobject> loadedAssets;
-        int programId;
-        int matrixId;
-        int waterProgramID;
-        int skyBoxProgramID;
-        int lightProgramID;
-        int waterLightProgramID;
-        double time;
-        float temp = 5;
-        int vecId;
-        int timeId;
-        Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
+        private CameraController cameraController;
+        private List<OBJobject> loadedAssets;
+        private int programId;
+        private int matrixId;
+        private int waterProgramID;
+        private int skyBoxProgramID;
+        private int lightProgramID;
+        private int waterLightProgramID;
+        private double time;
+        private float temp = 5;
+        private int vecId;
+        private int timeId;
+        private Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
 
-        ParticleSystem fire;
+        private Key[] _kCode = new Key[]
+        {
+            Key.Up,
+            Key.Up,
+            Key.Down,
+            Key.Down,
+            Key.Left,
+            Key.Right,
+            Key.Left,
+            Key.Right,
+            Key.B,
+            Key.A
+        };
+
+        private Queue<Key> _kInput = new Queue<Key>();
+
+        private ParticleSystem fire;
 
         public Program()
         {
@@ -41,6 +61,10 @@ namespace CampFireScene
             KeyUp += Program_KeyUp;
         }
 
+        /// <summary>
+        /// Load in external assets.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -100,26 +124,15 @@ namespace CampFireScene
             fire = new ParticleSystem(new Vector3(1, 1, -1), 1000);
         }
 
+        /// <summary>
+        /// Sets the view port to the new size.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             GL.Viewport(0, 0, Width, Height);
         }
-
-        Key[] _kCode = new Key[]
-        {
-            Key.Up,
-            Key.Up,
-            Key.Down,
-            Key.Down,
-            Key.Left,
-            Key.Right,
-            Key.Left,
-            Key.Right,
-            Key.B,
-            Key.A
-        };
-        Queue<Key> _kInput = new Queue<Key>();
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -145,7 +158,7 @@ namespace CampFireScene
         {
             base.OnRenderFrame(e);
             time += e.Time;
-            
+
             try
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -156,7 +169,6 @@ namespace CampFireScene
                 GL.MatrixMode(MatrixMode.Modelview);
                 GL.LoadIdentity();
 
-                
                 foreach (OBJobject obj in loadedAssets)
                 {
                     if (obj.shadersID != 0) GL.UseProgram(obj.shadersID);
@@ -180,11 +192,9 @@ namespace CampFireScene
             }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-        }
-
+        /// <summary>
+        /// Prints the error stored on the graphics card to the console.
+        /// </summary>
         private void PrintError()
         {
             ErrorCode ec = GL.GetError();
@@ -202,7 +212,7 @@ namespace CampFireScene
             OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
         }
 
-        void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
+        private void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
             _kInput.Enqueue(e.Key);
             if (_kInput.Count == _kCode.Length)
@@ -215,6 +225,12 @@ namespace CampFireScene
             }
         }
 
+        /// <summary>
+        /// Returns
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         private bool isEqual(Key[] a, Key[] b)
         {
             if (a.Length != b.Length)
