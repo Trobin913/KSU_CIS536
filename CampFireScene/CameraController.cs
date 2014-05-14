@@ -6,8 +6,8 @@ namespace CampFireScene
 {
     internal class Camera
     {
-        public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
+        public Vector3 Position = Vector3.Zero;
 
         public Matrix4 GetViewMatrix()
         {
@@ -47,6 +47,12 @@ namespace CampFireScene
             Position += offset;
         }
 
+        public void Reset()
+        {
+            Position = new Vector3(0f, 0f, 5f);
+            Orientation = new Vector3((float)Math.PI, 0f, 0f);
+        }
+
         public void Rotate(float x, float y)
         {
             Orientation.X = (Orientation.X + x) % (float)(Math.PI * 2);
@@ -56,35 +62,31 @@ namespace CampFireScene
                     (float)(Math.PI / 2 - 0.1)),
                 (float)(-Math.PI / 2 + 0.1));
         }
-
-        public void Reset()
-        {
-            Position = new Vector3(0f, 0f, 5f);
-            Orientation = new Vector3((float)Math.PI, 0f, 0f);
-        }
     }
 
     internal class CameraController
     {
-        private const float ASPECT = 4.0f / 3.0f;
-        private const float NEAR_CLIP = 0.1f;
-        private const float FAR_CLIP = 1000.0f;
-
-        private Camera _camera;
-        private GameWindow _window;
-        private Vector2 _lastMousePos;
-
+        public float KeyboardSensitivity = 0.1f;
+        public float MouseSensitivity = 0.01f;
+        public float MoveSpeed = 0.2f;
         public Matrix4 ProjectionMatrix;
         public Matrix4 ViewMatrix;
-
-        public float MoveSpeed = 0.2f;
-        public float MouseSensitivity = 0.01f;
-        public float KeyboardSensitivity = 0.1f;
+        private const float ASPECT = 4.0f / 3.0f;
+        private const float FAR_CLIP = 1000.0f;
+        private const float NEAR_CLIP = 0.1f;
+        private Camera _camera;
+        private Vector2 _lastMousePos;
+        private GameWindow _window;
 
         public CameraController(GameWindow window)
         {
             _window = window;
             _camera = new Camera();
+        }
+
+        public void Reset()
+        {
+            _camera.Reset();
         }
 
         public void Update(double deltaTime)
@@ -103,11 +105,6 @@ namespace CampFireScene
 
             ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, ASPECT * (_window.Width / _window.Height), NEAR_CLIP, FAR_CLIP);
             ViewMatrix = _camera.GetViewMatrix();
-        }
-
-        public void Reset()
-        {
-            _camera.Reset();
         }
 
         private Vector3 getMoveVector()

@@ -9,37 +9,6 @@ namespace CampFireScene
     {
         private static Dictionary<string, int> LOADED_SHADERS = new Dictionary<string, int>();
 
-        private static ShaderType getShaderTypeFromExtension(string shaderFilePath)
-        {
-            string ext = Path.GetExtension(shaderFilePath).ToLower();
-            switch (ext)
-            {
-                case ".vertexshader":
-                    return ShaderType.VertexShader;
-
-                case ".fragmentshader":
-                    return ShaderType.FragmentShader;
-
-                case ".computeshader":
-                    return ShaderType.ComputeShader;
-
-                case ".geometryshader":
-                    return ShaderType.GeometryShader;
-
-                case ".geometryshaderext":
-                    return ShaderType.GeometryShaderExt;
-
-                case ".tesscontrolshader":
-                    return ShaderType.TessControlShader;
-
-                case ".tessevaluationshader":
-                    return ShaderType.TessEvaluationShader;
-
-                default:
-                    throw new Exception("Unknown shader extention: " + ext);
-            }
-        }
-
         public static int LoadProgram(params string[] shaders)
         {
             int[] shaderIds = new int[shaders.Length];
@@ -87,6 +56,37 @@ namespace CampFireScene
             LOADED_SHADERS[shaderFilePath] = shaderId;
 
             return shaderId;
+        }
+
+        private static ShaderType getShaderTypeFromExtension(string shaderFilePath)
+        {
+            string ext = Path.GetExtension(shaderFilePath).ToLower();
+            switch (ext)
+            {
+                case ".vertexshader":
+                    return ShaderType.VertexShader;
+
+                case ".fragmentshader":
+                    return ShaderType.FragmentShader;
+
+                case ".computeshader":
+                    return ShaderType.ComputeShader;
+
+                case ".geometryshader":
+                    return ShaderType.GeometryShader;
+
+                case ".geometryshaderext":
+                    return ShaderType.GeometryShaderExt;
+
+                case ".tesscontrolshader":
+                    return ShaderType.TessControlShader;
+
+                case ".tessevaluationshader":
+                    return ShaderType.TessEvaluationShader;
+
+                default:
+                    throw new Exception("Unknown shader extention: " + ext);
+            }
         }
     }
 }

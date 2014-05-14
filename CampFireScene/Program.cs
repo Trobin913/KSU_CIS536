@@ -13,30 +13,6 @@ namespace CampFireScene
     /// </summary>
     internal class Program : GameWindow
     {
-        /// <summary>
-        /// Creates and runs a new GameWindow.
-        /// </summary>
-        /// <param name="args"></param>
-        public static void Main(string[] args)
-        {
-            using (Program p = new Program())
-                p.Run(60.0);
-        }
-
-        private CameraController cameraController;
-        private List<OBJobject> loadedAssets;
-        private int programId;
-        private int matrixId;
-        private int waterProgramID;
-        private int skyBoxProgramID;
-        private int lightProgramID;
-        private int waterLightProgramID;
-        private double time;
-        private float temp = 5;
-        private int vecId;
-        private int timeId;
-        private Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
-
         private Key[] _kCode = new Key[]
         {
             Key.Up,
@@ -53,12 +29,56 @@ namespace CampFireScene
 
         private Queue<Key> _kInput = new Queue<Key>();
 
+        private CameraController cameraController;
+
         private ParticleSystem fire;
+
+        private int lightProgramID;
+
+        private List<OBJobject> loadedAssets;
+
+        private int matrixId;
+
+        private int programId;
+
+        private int skyBoxProgramID;
+
+        private float temp = 5;
+
+        private double time;
+
+        private int timeId;
+
+        private Vector3 vec = new Vector3(0.0f, 0.0f, 0.0f);
+
+        private int vecId;
+
+        private int waterLightProgramID;
+
+        private int waterProgramID;
 
         public Program()
         {
             cameraController = new CameraController(this);
             KeyUp += Program_KeyUp;
+        }
+
+        /// <summary>
+        /// Creates and runs a new GameWindow.
+        /// </summary>
+        /// <param name="args"></param>
+        public static void Main(string[] args)
+        {
+            using (Program p = new Program())
+                p.Run(60.0);
+        }
+
+        /// <summary>
+        /// Resets the mouse cursor to the center of the window.
+        /// </summary>
+        public void ResetCursor()
+        {
+            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
         }
 
         /// <summary>
@@ -124,36 +144,6 @@ namespace CampFireScene
             fire = new ParticleSystem(new Vector3(1, 1, -1), 1000);
         }
 
-        /// <summary>
-        /// Sets the view port to the new size.
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            GL.Viewport(0, 0, Width, Height);
-        }
-
-        protected override void OnUpdateFrame(FrameEventArgs e)
-        {
-            base.OnUpdateFrame(e);
-
-            fire.Update(e.Time);
-
-            if (Focused)
-            {
-                cameraController.Update(e.Time);
-                ResetCursor();
-                if (Keyboard[Key.R])
-                    cameraController.Reset();
-            }
-
-            if (Keyboard[Key.Escape])
-            {
-                Exit();
-            }
-        }
-
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
@@ -193,35 +183,32 @@ namespace CampFireScene
         }
 
         /// <summary>
-        /// Prints the error stored on the graphics card to the console.
+        /// Sets the view port to the new size.
         /// </summary>
-        private void PrintError()
+        /// <param name="e"></param>
+        protected override void OnResize(EventArgs e)
         {
-            ErrorCode ec = GL.GetError();
-            if (ec != 0)
+            base.OnResize(e);
+            GL.Viewport(0, 0, Width, Height);
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
+
+            fire.Update(e.Time);
+
+            if (Focused)
             {
-                Console.Out.WriteLine(ec.ToString());
+                cameraController.Update(e.Time);
+                ResetCursor();
+                if (Keyboard[Key.R])
+                    cameraController.Reset();
             }
-        }
 
-        /// <summary>
-        /// Resets the mouse cursor to the center of the window.
-        /// </summary>
-        public void ResetCursor()
-        {
-            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
-        }
-
-        private void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
-        {
-            _kInput.Enqueue(e.Key);
-            if (_kInput.Count == _kCode.Length)
+            if (Keyboard[Key.Escape])
             {
-                if (isEqual(_kInput.ToArray(), _kCode))
-                {
-                    processKCode();
-                }
-                _kInput.Dequeue();
+                Exit();
             }
         }
 
@@ -244,9 +231,34 @@ namespace CampFireScene
             return true;
         }
 
+        /// <summary>
+        /// Prints the error stored on the graphics card to the console.
+        /// </summary>
+        private void PrintError()
+        {
+            ErrorCode ec = GL.GetError();
+            if (ec != 0)
+            {
+                Console.Out.WriteLine(ec.ToString());
+            }
+        }
+
         private void processKCode()
         {
             Console.Out.WriteLine("Konami code");
+        }
+
+        private void Program_KeyUp(object sender, KeyboardKeyEventArgs e)
+        {
+            _kInput.Enqueue(e.Key);
+            if (_kInput.Count == _kCode.Length)
+            {
+                if (isEqual(_kInput.ToArray(), _kCode))
+                {
+                    processKCode();
+                }
+                _kInput.Dequeue();
+            }
         }
     }
 }

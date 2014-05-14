@@ -30,13 +30,6 @@ namespace CampFireScene.Util
             Add(vertex.X, vertex.Y, vertex.Z);
         }
 
-        public void RemoveVector(int index)
-        {
-            this.RemoveAt(index);
-            this.RemoveAt(index);
-            this.RemoveAt(index);
-        }
-
         public Vector3 GetVector(int index)
         {
             int startIndex = index * 3;
@@ -57,6 +50,13 @@ namespace CampFireScene.Util
         public int GetVectorCount()
         {
             return this.Count / 3;
+        }
+
+        public void RemoveVector(int index)
+        {
+            this.RemoveAt(index);
+            this.RemoveAt(index);
+            this.RemoveAt(index);
         }
     }
 }

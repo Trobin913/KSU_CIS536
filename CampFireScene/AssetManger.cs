@@ -32,6 +32,23 @@ namespace CampFireScene
             return parcedFiles;
         }
 
+        private static int loadImage(string filePath)
+        {
+            Bitmap picture = new Bitmap(Image.FromFile(filePath));
+            System.Drawing.Imaging.BitmapData data = picture.LockBits(new System.Drawing.Rectangle(0, 0, picture.Width, picture.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            int textureHandle;
+            GL.Enable(EnableCap.Texture2D);
+            textureHandle = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, textureHandle);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            picture.UnlockBits(data);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+            return textureHandle;
+        }
+
         private static List<OBJobject> ParceFiles(List<String> files)
         {
             StreamReader sr;
@@ -124,35 +141,18 @@ namespace CampFireScene
 
             return listOfOBJS;
         }
-
-        private static int loadImage(string filePath)
-        {
-            Bitmap picture = new Bitmap(Image.FromFile(filePath));
-            System.Drawing.Imaging.BitmapData data = picture.LockBits(new System.Drawing.Rectangle(0, 0, picture.Width, picture.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            int textureHandle;
-            GL.Enable(EnableCap.Texture2D);
-            textureHandle = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, textureHandle);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-            picture.UnlockBits(data);
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-
-            return textureHandle;
-        }
     }
 
     public class faces
     {
-        public int VertexIndex1;
-        public int VertexIndex2;
-        public int VertexIndex3;
-        public int textureIndex1;
-        public int textureIndex2;
-        public int textureIndex3;
         public int normalIndex1;
         public int normalIndex2;
         public int normalIndex3;
+        public int textureIndex1;
+        public int textureIndex2;
+        public int textureIndex3;
+        public int VertexIndex1;
+        public int VertexIndex2;
+        public int VertexIndex3;
     }
 }
